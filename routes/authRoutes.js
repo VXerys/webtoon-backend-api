@@ -1,7 +1,7 @@
 const express = require('express');
 require('dotenv').config();
 const { registerUser, verifyUser, loginUser, resetPassword, requestResetPassword } = require('../controllers/authController');
-const { protect } = require('../middlewares/authMiddlewares');
+const { protect } = require('../middlewares/jwtMiddlewares');
 
 const router = express.Router();
 
