@@ -2,11 +2,8 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const db = require('../db/connection');
-const { sendVerificationEmail } = require('../services/emailService');
+const { sendVerificationEmail, generateVerificationCode, sendResetPasswordEmail, generateResetToken } = require('../services/emailService');
 
-const generateVerificationCode = () => {
- return crypto.randomBytes(3).toString('hex').toUpperCase();
-};
 
 const registerUser = async (req, res) => {
  try {
@@ -130,9 +127,84 @@ const loginUser = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+  try {
+    const { email, newPassword, confirmPassword, resetToken } = req.body;
+    
+    if (!email || !newPassword || !confirmPassword || !resetToken) {
+      return res.status(400).json({ error: 'Email, new password, confirm password, and reset token are required.' });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ error: 'New password and confirm password do not match.' });
+    }
+
+    const [user] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+
+    if (user.length === 0) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    const userData = user[0];
+
+    if(!userData.reset_token || userData.reset_token !== resetToken)  {
+      return res.status(400).json({ error: 'Invalid reset token.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await db.query(
+      'UPDATE users SET password = ?, reset_token = NULL WHERE id = ?',
+      [hashedPassword, userData.id]
+    );
+
+    res.json({ message: 'Password reset successfully. You can now log in with your new password.' });
+    } catch (err) {
+    console.error('Error resetting password:', err);
+    res.status(500).json({ error: 'Internal Server Error.' });
+  }
+};
+
+const requestResetPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required.' });
+    }
+
+    const [user] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+
+    if (user.length === 0) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    const userData = user[0];
+
+    if (!userData.is_verified) {
+      return res.status(401).json({ error: 'Your account is not verified. Please verify your email.' });
+    }
+
+    const resetToken = generateResetToken();
+
+    await db.query(
+      'UPDATE users SET reset_token = ? WHERE id = ?',
+      [resetToken, userData.id]
+    );
+
+    await sendResetPasswordEmail(email, resetToken);
+
+    res.json({ message: 'Password reset request sent. Please check your email.' });
+  } catch (err) {
+    console.error('Error requesting password reset:', err);
+    res.status(500).json({ error: 'Internal Server Error.' });
+  }
+};
+
 module.exports = {
   registerUser,
   verifyUser,
-  loginUser
-
+  loginUser,
+  resetPassword,
+  requestResetPassword
 };

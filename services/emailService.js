@@ -6,6 +6,10 @@ const generateVerificationCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+const generateResetToken = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465, 
@@ -63,5 +67,6 @@ module.exports = {
   sendResetPasswordEmail, 
   sendVerificationEmail,
   sendEmail,
-  generateVerificationCode
+  generateVerificationCode,
+  generateResetToken
 };
