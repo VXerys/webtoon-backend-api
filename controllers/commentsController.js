@@ -68,6 +68,7 @@ const editComment = async (req, res) => {
       return res.status(400).json({ message: 'Comment must be between 3 and 255 characters' });
     }
 
+    const [findComment] = await db.query('SELECT * FROM comments WHERE id = ?', [id])
     if (findComment.length == 0) {
       return res.status(404).json({ message: 'Comment not found' });
     }
@@ -80,22 +81,87 @@ const editComment = async (req, res) => {
   }
 };
 
+const deleteComment = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+
+    if (!id || isNaN(id)) {
+      return res.status(404).json({ message: 'Valid  comment ID is required' });
+    }
+
+    const [findComment] = await db.query('SELECT * FROM comments WHERE id = ?', [id])
+    if (findComment.length == 0) {
+      return res.status(404).json({ message: 'Comment not found' });
+    } 
+
+    await db.query('DELETE FROM comments WHERE id = ?', [id]);
+
+    res.status(200).json({ message: 'Comment deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
   
 
-const getComments = (req, res) => {
- db.query('SELECT * FROM comments', (err, results) => {
-  if (err) {
-   console.error('Error retrieving comments:', err);
-   res.status(500).json({ message: 'Internal server error' });
-  } else {
-   res.status(200).json(results);
+const getCommentsByComicId = async (req, res) => {
+  const { comic_id } = req.params;
+
+  try {
+    if (!comic_id || isNaN(comic_id)) {
+      return res.status(400).json({ message: 'Valid comic ID is required.' });
+    }
+
+    const [comments] = await db.query('SELECT * FROM comments WHERE comic_id = ? ORDER BY create_at DESC', [comic_id]);
+
+    if (comments.length === 0) {
+      return res.status(404).json({ message: 'No comments found for this comic.' });
+    }
+
+    res.status(200).json({ comic_id, comments });
+  } catch (error) {
+    console.error('Error retrieving comments:', error);
+    res.status(500).json({ message: 'Internal server error.' });
   }
- });
 };
 
+const getCommentsByEpisodeId = async (req, res) => {
+  const { episode_id } = req.params;
+
+  try {
+    if (!episode_id || isNaN(episode_id)) {
+      return res.status(400).json({ message: 'Valid episode ID is required.' });
+    }
+
+    const [comments] = await db.query(`SELECT 
+         comments.id AS comment_id,
+         comments.comment_text,
+         comments.create_at,
+         users.id AS user_id,
+         users.username AS user_name
+       FROM comments
+       JOIN users ON comments.user_id = users.id
+       WHERE comments.episode_id = ?
+       ORDER BY comments.create_at DESC`,
+      [episode_id]);
+
+    if (comments.length === 0) {
+      return res.status(404).json({ message: 'No comments found for this episode.' });
+    }
+
+    res.status(200).json({ episode_id, comments });
+    
+  } catch (error) {
+    console.error('Error retrieving comments:', error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+};
 
 module.exports = {
- getComments,
+ getCommentsByComicId,
  createComment,
- editComment
+ editComment,
+ deleteComment,
+ getCommentsByEpisodeId
 };

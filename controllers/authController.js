@@ -66,7 +66,7 @@ const verifyUser = async (req, res) => {
       return res.status(401).json({ error: 'User not found'});
     }
 
-    if(user[0].verification_code === verificationCode) {
+    if(user[0].verification_code !== verificationCode) {
       return res.status(401).json({ error: 'Invalid verification code'});
     }
 
