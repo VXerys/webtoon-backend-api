@@ -4,8 +4,8 @@
 
 ## **Daftar Isi**
 
-1. [Pendahuluan](#pendahuluan)  
-2. [Database](#database)  
+1. [Pendahuluan](##pendahuluan)  
+2. [Database](##database)  
 3. [Struktur Proyek](#struktur-proyek)  
 4. [Penjelasan Folder dan File](#penjelasan-folder-dan-file)  
    - a. **controllers**  
