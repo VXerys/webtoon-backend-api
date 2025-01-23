@@ -307,22 +307,18 @@ root/
 │   ├── episodeRoutes.js
 │   └── userRoutes.js
 │
-├── models/
-│   ├── db.js
-│   └── userModel.js
-│
 ├── middleware/
-│   └── authMiddleware.js
+│   └── jwtMiddleware.js
 │
 ├── services/
 │   ├── emailService.js
 │   └── notificationService.js
 │
-├── config/
-│   └── database.js
+├── db/
+│   └──connections.js
 │
 ├── utils/
-│   ├── errorHandler.js
+│   ├── response.js
 │   └── jwtHelper.js
 │
 ├── .env
@@ -383,159 +379,154 @@ Folder ini berisi utilitas yang bersifat reusable untuk mendukung berbagai fungs
 
 **[⬆ kembali ke atas](#daftar-isi)**
 
-### **Penjelasan Folder dan File**
+### **Penjelasan Struktur Folder dan File**
 
-#### a. controllers
+#### **1. Folder `controllers`**
+Folder ini berisi logika utama (business logic) untuk menangani berbagai fitur aplikasi. Setiap controller memisahkan logika berdasarkan modul atau fitur tertentu.
 
-### authController.js
+- **`authController.js`**  
+  Mengelola proses autentikasi dan otorisasi pengguna, dengan fungsi utama:  
+  - **`registerUser`**:  
+    Validasi data registrasi, hashing password, dan menyimpan data pengguna baru ke database.  
+  - **`verifyUser`**:  
+    Memproses token verifikasi untuk mengaktifkan akun pengguna.  
+  - **`loginUser`**:  
+    Memeriksa kredensial pengguna, menghasilkan token JWT untuk otentikasi.  
+  - **`resetPassword`**:  
+    Mengatur ulang password pengguna berdasarkan token validasi.  
+  - **`requestResetPassword`**:  
+    Mengirim email berisi token reset password kepada pengguna yang meminta.
 
-File `authController.js` menangani autentikasi pengguna seperti registrasi, verifikasi, dan pengelolaan token. Berikut adalah penjelasan kode yang dibagi ke dalam beberapa bagian untuk kejelasan.
+- **`comicController.js`**  
+  Menangani seluruh fitur terkait pengelolaan data komik, dengan fungsi:  
+  - **`getAllComics`**:  
+    Mengambil daftar semua komik, termasuk fitur pencarian dan filter berdasarkan genre, status, atau popularitas.  
+  - **`getComicById`**:  
+    Mengambil detail komik tertentu berdasarkan `id`.  
+  - **`createComic`**:  
+    Membuat komik baru, memvalidasi data, dan menyimpannya ke database.  
+  - **`editComic`**:  
+    Memperbarui informasi komik tertentu, seperti judul, sinopsis, atau status publikasi.  
+  - **`deleteComic`**:  
+    Menghapus komik berdasarkan ID, dengan validasi untuk memastikan hanya pemilik komik yang dapat melakukannya.
 
----
+- **`commentsController.js`**  
+  Mengelola komentar pada komik atau episode tertentu, dengan fungsi:  
+  - **`getCommentsByComicId`**:  
+    Mengambil semua komentar yang terkait dengan `comic_id`.  
+  - **`createComment`**:  
+    Menambahkan komentar baru, memvalidasi data seperti teks komentar, ID pengguna, dan ID komik.  
+  - **`editComment`**:  
+    Memperbarui komentar berdasarkan ID, dengan validasi pengguna untuk memastikan hanya pemilik komentar yang dapat mengedit.  
+  - **`deleteComment`**:  
+    Menghapus komentar tertentu berdasarkan ID, dengan validasi pengguna.  
+  - **`getCommentsByEpisodeId`**:  
+    Mengambil semua komentar yang terkait dengan episode tertentu (`episode_id`), biasanya digunakan untuk komentar spesifik dalam satu episode komik.
 
-#### **1. Module Require**
-
-```javascript
-const bcrypt = require('bcrypt');
-const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
-const db = require('../db/connection');
-const { sendVerificationEmail, generateVerificationCode } = require('../services/emailService');
-```
-
-**Penjelasan:**
-- **`bcrypt`**: Digunakan untuk hashing password sebelum disimpan ke database, guna meningkatkan keamanan data pengguna.
-- **`crypto`**: Membuat token/kode acak (misalnya, untuk kode verifikasi).
-- **`jsonwebtoken`**: Mengelola token berbasis JWT untuk otentikasi.
-- **`db`**: Koneksi ke database.
-- **`emailService`**: Berisi fungsi tambahan seperti `sendVerificationEmail` (mengirim email verifikasi) dan `generateVerificationCode` (membuat kode unik).
-
----
-
-#### **2. Fungsi `registerUser`**
-
-##### **Kode: Validasi Password dan Email**
-
-```javascript
-const registerUser = async (req, res) => {
-  try {
-    const { username, email, password, confirmPassword } = req.body;
-
-    if (password !== confirmPassword) {
-      return res.status(400).json({ error: 'Password and confirm password do not match.' });
-    }
-
-    const [existingUser] = await db.query(
-      'SELECT * FROM users WHERE email = ?',
-      [email]
-    );
-```
-
-**Penjelasan:**
-- Fungsi ini menerima data pengguna dari `req.body` (username, email, password, dan confirmPassword).
-- Validasi dilakukan untuk memastikan password dan confirmPassword cocok.
-- Mengecek database untuk melihat apakah email sudah terdaftar menggunakan query SQL.
-
-##### **Kode: Jika Email Sudah Ada**
-
-```javascript
-    if (existingUser.length > 0) {
-      if (!existingUser[0].is_verified) {
-        const verificationCode = generateVerificationCode();
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        await db.query(
-          'UPDATE users SET username = ?, password = ?, verification_code = ? WHERE email = ? AND is_verified = false',
-          [username, hashedPassword, verificationCode, email]
-        );
-
-        await sendVerificationEmail(email, verificationCode);
-        return res.json({ message: 'Verification email resent. Please check your email.' });
-      } else {
-        return res.status(400).json({ error: 'Email is already registered and verified.' });
-      }
-    }
-```
-
-**Penjelasan:**
-- Jika email sudah ada namun pengguna belum diverifikasi, data pengguna diperbarui di database, termasuk username, hashed password, dan kode verifikasi baru.
-- Sistem mengirimkan ulang email verifikasi melalui `sendVerificationEmail`.
-
-##### **Kode: Jika Email Belum Ada**
-
-```javascript
-    const verificationCode = generateVerificationCode();
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await db.query(
-      'INSERT INTO users (username, email, password, verification_code) VALUES (?, ?, ?, ?)',
-      [username, email, hashedPassword, verificationCode]
-    );
-
-    await sendVerificationEmail(email, verificationCode);
-    res.json({ message: 'User registered successfully. Check your email for verification.' });
-  } catch (error) {
-    console.error('Error registering user:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-```
-
-**Penjelasan:**
-- Jika email belum ada, data pengguna baru dimasukkan ke dalam database.
-- Password pengguna di-hash menggunakan `bcrypt` untuk mencegah pencurian data password asli.
-- Sistem mengirimkan email verifikasi kepada pengguna untuk memastikan validitas email.
+- **`episodeController.js`**  
+  Mengelola seluruh fitur terkait episode komik, dengan fungsi:  
+  - **`getEpisodeByComicId`**:  
+    Mengambil daftar semua episode berdasarkan `comic_id`.  
+  - **`createEpisode`**:  
+    Membuat episode baru, memvalidasi data seperti nomor episode, judul, dan konten.  
+  - **`editEpisode`**:  
+    Mengedit detail episode tertentu.  
+  - **`deleteEpisode`**:  
+    Menghapus episode berdasarkan ID, dengan validasi untuk memastikan hanya pemilik komik yang dapat melakukannya.  
+  - **`getEpisodeDetails`**:  
+    Mengambil detail lengkap dari satu episode berdasarkan ID episode.
 
 ---
 
-#### **3. Fungsi `verifyUser`**
+#### **2. Folder `routes`**
+Folder ini mendefinisikan endpoint untuk API dan menghubungkan setiap endpoint ke fungsi yang relevan di dalam controller.
 
-##### **Kode: Cek Pengguna**
+- **`authRoutes.js`**:  
+  Menangani rute autentikasi, seperti:  
+  - `POST /register`: Registrasi pengguna.  
+  - `POST /verify`: Verifikasi akun pengguna.  
+  - `POST /login`: Login pengguna.  
+  - `POST /reset-password`: Mengatur ulang password.  
+  - `POST /request-reset-password`: Meminta token untuk reset password.  
 
-```javascript
-const verifyUser = async (req, res) => {
-  try {
-    const { email, verificationCode } = req.body;
+- **`comicRoutes.js`**:  
+  Mengatur rute untuk komik, seperti:  
+  - `GET /comics`: Mengambil daftar semua komik.  
+  - `GET /comics/:id`: Mengambil detail komik berdasarkan ID.  
+  - `POST /comics`: Membuat komik baru.  
+  - `PUT /comics/:id`: Memperbarui data komik.  
+  - `DELETE /comics/:id`: Menghapus komik tertentu.
 
-    const [user] = await db.query(
-      'SELECT * FROM users WHERE email = ?',
-      [email]
-    );
+- **`episodeRoutes.js`**:  
+  Mengelola rute episode, seperti:  
+  - `GET /episodes/:comicId`: Mengambil semua episode untuk komik tertentu.  
+  - `POST /episodes`: Menambahkan episode baru.  
+  - `PUT /episodes/:id`: Mengedit episode tertentu.  
+  - `DELETE /episodes/:id`: Menghapus episode berdasarkan ID.  
 
-    if (user.length === 0) {
-      return res.status(401).json({ error: 'User not found' });
-    }
-```
-
-**Penjelasan:**
-- Fungsi ini menerima email dan kode verifikasi dari `req.body`.
-- Sistem mengecek database untuk memastikan pengguna dengan email tersebut ada.
-
-##### **Kode: Verifikasi Kode**
-
-```javascript
-    if (user[0].verification_code !== verificationCode) {
-      return res.status(401).json({ error: 'Invalid verification code' });
-    }
-
-    await db.query(
-      'UPDATE users SET is_verified = true, verification_code = NULL WHERE id = ?',
-      [user[0].id]
-    );
-
-    res.json({ message: 'User verified successfully' });
-  } catch (error) {
-    console.error('Error verifying user:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-```
-
-**Penjelasan:**
-- Memastikan kode verifikasi yang dimasukkan pengguna sesuai dengan yang ada di database.
-- Jika cocok, status pengguna diperbarui menjadi terverifikasi (`is_verified = true`), dan kode verifikasi dihapus dari database.
-- Mengembalikan respons sukses kepada klien.
+- **`userRoutes.js`**:  
+  Menangani rute untuk data pengguna, seperti:  
+  - `GET /users/:id`: Mengambil detail profil pengguna.  
+  - `PUT /users/:id`: Memperbarui data pengguna.
 
 ---
+
+#### **3. Folder `middleware`**
+Folder ini berisi middleware untuk memproses request sebelum diteruskan ke controller.  
+- **`jwtMiddleware.js`**:  
+  Middleware untuk memverifikasi token JWT, memastikan pengguna yang mengakses endpoint telah terautentikasi.  
+  - Menyisipkan data pengguna (seperti `userId`) ke dalam request.
+
+---
+
+#### **4. Folder `services`**
+Folder ini menyediakan layanan utilitas yang mendukung fitur utama aplikasi.  
+
+- **`emailService.js`**:  
+  Mengelola pengiriman email, seperti:  
+  - Email verifikasi akun pengguna.  
+  - Email reset password.  
+- **`notificationService.js`**:  
+  Menyediakan fungsi untuk mengirimkan notifikasi, baik melalui email atau media lainnya.
+
+---
+
+#### **5. Folder `db`**
+Folder ini berisi file konfigurasi database.  
+- **`connections.js`**:  
+  Mengatur koneksi database, termasuk autentikasi dan konfigurasi variabel lingkungan (`.env`).
+
+---
+
+#### **6. Folder `utils`**
+Folder ini berisi fungsi utilitas untuk mendukung berbagai kebutuhan aplikasi.  
+- **`response.js`**:  
+  Membantu membuat respons standar, seperti `successResponse` dan `errorResponse`.  
+- **`jwtHelper.js`**:  
+  Berisi fungsi untuk membuat dan memverifikasi token JWT.
+
+---
+
+#### **7. File `.env`**
+Berisi konfigurasi sensitif, seperti:  
+- `DB_HOST`, `DB_USER`, `DB_PASS`: Untuk koneksi database.  
+- `JWT_SECRET`: Untuk token JWT.  
+- `EMAIL_API_KEY`: Untuk layanan email.
+
+---
+
+#### **8. File `server.js`**
+File utama aplikasi, bertanggung jawab untuk:  
+- Inisialisasi server dengan Express.  
+- Memasang middleware global.  
+- Menghubungkan rute dari folder `routes`.  
+- Menjalankan server pada port tertentu.
+
+---
+
+#### **9. File `package.json`**
+File ini berisi metadata proyek, daftar dependensi, dan script untuk menjalankan aplikasi.
+
+--- 
 
 **[⬆ kembali ke atas](#daftar-isi)**
