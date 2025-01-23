@@ -325,55 +325,6 @@ root/
 └── package.json
 ```
 
-#### **1. `controllers/`**
-Berisi logika utama untuk setiap endpoint API. Controller menangani permintaan yang datang, memproses data, dan mengembalikan respons yang sesuai.  
-
-- **`authController.js`**: Menangani fitur autentikasi seperti registrasi, login, dan verifikasi pengguna.  
-- **`comicController.js`**: Mengelola data komik, seperti menambahkan komik baru, mengambil daftar komik, dan menghapus komik.  
-- **`episodeController.js`**: Berfungsi untuk mengatur data episode, termasuk fitur seperti melihat episode tertentu atau menambah episode baru.  
-- **`userController.js`**: Bertanggung jawab untuk fitur-fitur terkait pengguna, seperti pembaruan profil atau pengaturan akun.  
-
-#### **2. `routes/`**
-Folder ini berisi semua rute API yang menghubungkan permintaan pengguna ke controller yang sesuai. Setiap file di dalam folder ini bertanggung jawab untuk mendefinisikan endpoint berdasarkan jenis fungsionalitasnya.  
-
-- **`authRoutes.js`**: Endpoint untuk registrasi, login, dan verifikasi pengguna.  
-- **`comicRoutes.js`**: Endpoint terkait operasi CRUD pada komik.  
-- **`episodeRoutes.js`**: Endpoint yang menangani pengelolaan episode komik.  
-- **`userRoutes.js`**: Endpoint untuk fitur terkait pengguna, seperti pembaruan profil.  
-
-#### **3. `models/`**
-Folder ini berisi file yang mengatur koneksi database dan interaksi dengan tabel. Model memetakan struktur tabel dan memudahkan pengelolaan data di database.  
-
-- **`db.js`**: Berisi konfigurasi untuk menghubungkan aplikasi dengan database menggunakan library seperti `mysql2` atau `sequelize`.  
-- **`userModel.js`**: Mengelola skema dan operasi data terkait tabel pengguna.  
-
-#### **4. `middleware/`**
-Folder ini menyimpan fungsi perantara (middleware) yang digunakan untuk memproses permintaan sebelum sampai ke controller.  
-
-- **`authMiddleware.js`**: Memverifikasi token JWT untuk memastikan pengguna yang mengakses endpoint telah terautentikasi.  
-
-#### **5. `services/`**
-Berisi fungsi tambahan yang mendukung fitur utama aplikasi. Service membantu memisahkan logika bisnis tertentu agar lebih modular.  
-
-- **`emailService.js`**: Mengelola pengiriman email, seperti email verifikasi dan notifikasi.  
-- **`notificationService.js`**: Berfungsi untuk membuat atau mengirim notifikasi kepada pengguna.  
-
-#### **6. `config/`**
-Folder ini menyimpan file konfigurasi penting yang digunakan di seluruh aplikasi.  
-
-- **`database.js`**: Menyimpan konfigurasi database, seperti host, port, nama database, dan kredensial.  
-
-#### **7. `utils/`**
-Folder ini berisi utilitas yang bersifat reusable untuk mendukung berbagai fungsi di aplikasi.  
-
-- **`errorHandler.js`**: Fungsi untuk menangani kesalahan secara global dan mengembalikan respons error yang konsisten.  
-- **`jwtHelper.js`**: Fungsi untuk membuat dan memverifikasi token JWT.  
-
-#### **8. File Lain**
-- **`.env`**: File yang menyimpan variabel lingkungan (environment variables) seperti kunci rahasia JWT, kredensial database, dan konfigurasi lainnya.  
-- **`server.js`**: File utama yang menginisialisasi server, middleware global, dan rute.  
-- **`package.json`**: Menyimpan metadata proyek, seperti nama, dependensi, dan skrip.  
-
 ---
 
 **[⬆ kembali ke atas](#daftar-isi)**
