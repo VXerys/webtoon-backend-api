@@ -12,11 +12,11 @@
    <summary>Klik untuk melihat semua langkah</summary>
       
    - [**controllers**](#1-folder-controllers)
-   - [**routes**](#folder-routes)
-   - [**middleware**](#folder-middlewware)
-   - [**services**](folder-services)
-   - [**db**](#folder-db)
-   - [**utils**](#folder-utils)
+   - [**routes**](#2-folder-routes)
+   - [**middleware**](#3-folder-middlewware)
+   - [**services**](#4-folder-services)
+   - [**db**](#5-folder-db)
+   - [**utils**](#6-folder-utils)
    </details>
 6. [Penjelasan Endpoint API](#penjelasan-endpoint-api)  
 7. [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)  
