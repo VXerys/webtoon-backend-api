@@ -11,7 +11,7 @@
    <details>
    <summary>Klik untuk melihat semua langkah</summary>
       
-   - [**controllers**](#1-folder-controller)
+   - [**controllers**](#1-folder-controllers)
    - [**routes**](#folder-routes)
    - [**middleware**](#folder-middlewware)
    - [**services**](folder-services)
