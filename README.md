@@ -4,10 +4,10 @@
 
 ## **Daftar Isi**
 
-1. [Pendahuluan](#pendahuluan)  
-2. [Database](#database)  
-3. [Struktur Proyek](#struktur-proyek)
-4. [Penjelasan Detail Struktur Folder dan File](#penjelasan-detail-struktur-folder-dan-file)
+- [Pendahuluan](#pendahuluan)  
+- [Database](#database)  
+- [Struktur Proyek](#struktur-proyek)
+- [Penjelasan Detail Struktur Folder dan File](#penjelasan-detail-struktur-folder-dan-file)
    <details>
    <summary>Klik untuk melihat semua langkah</summary>
       
@@ -18,12 +18,12 @@
    - [**db**](#5-folder-db)
    - [**utils**](#6-folder-utils)
    </details>
-6. [Penjelasan Endpoint API](#penjelasan-endpoint-api)  
-7. [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)  
-8. [Autentikasi dan Autorisasi](#autentikasi-dan-autorisasi)  
-9. [Error Handling](#error-handling)  
-10. [Testing](#testing)  
-11. [Kesimpulan](#kesimpulan)
+- [Penjelasan Endpoint API](#penjelasan-endpoint-api)  
+- [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)  
+- [Autentikasi dan Autorisasi](#autentikasi-dan-autorisasi)  
+- [Error Handling](#error-handling)  
+- [Testing](#testing)  
+- [Kesimpulan](#kesimpulan)
 
 ---
 
