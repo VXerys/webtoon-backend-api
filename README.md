@@ -8,11 +8,15 @@
 2. [Database](#database)  
 3. [Struktur Proyek](#struktur-proyek)  
 4. [Penjelasan Detail Struktur Folder dan File](#penjelasan-detail-struktur-folder-dan-file)
-   - controllers
-   - routes
-   - models
-   - services
-   - middleware
+   <details>
+   <summary>Klik untuk melihat semua langkah</summary>
+      
+   - **controllers**
+   - **routes**
+   - **models**
+   - **services**
+   - **middleware**
+   </details>
 6. [Penjelasan Endpoint API](#penjelasan-endpoint-api)  
 7. [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)  
 8. [Autentikasi dan Autorisasi](#autentikasi-dan-autorisasi)  
