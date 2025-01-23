@@ -7,18 +7,21 @@
 1. [Pendahuluan](#pendahuluan)  
 2. [Database](#database)  
 3. [Struktur Proyek](#struktur-proyek)  
-4. [Penjelasan Detail Struktur Folder dan File](#penjelasan-detail-struktur-folder-dan-file)  
+4. [Penjelasan Detail Struktur Folder dan File](#penjelasan-detail-struktur-folder-dan-file)
+   <details>
+   <summary>Klik untuk melihat semua langkah</summary>
    - a. **controllers**  
    - b. **routes**  
    - c. **models**  
    - d. **services**  
    - e. **middleware**  
-5. [Penjelasan Endpoint API](#penjelasan-endpoint-api)  
-6. [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)  
-7. [Autentikasi dan Autorisasi](#autentikasi-dan-autorisasi)  
-8. [Error Handling](#error-handling)  
-9. [Testing](#testing)  
-10. [Kesimpulan](#kesimpulan)
+   </details>
+6. [Penjelasan Endpoint API](#penjelasan-endpoint-api)  
+7. [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)  
+8. [Autentikasi dan Autorisasi](#autentikasi-dan-autorisasi)  
+9. [Error Handling](#error-handling)  
+10. [Testing](#testing)  
+11. [Kesimpulan](#kesimpulan)
 
 ---
 
