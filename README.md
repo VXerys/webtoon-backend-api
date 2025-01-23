@@ -11,6 +11,11 @@
    <details>
    <summary>Klik untuk melihat semua langkah</summary>
    - controllers
+   - [AI/Machine Learning/Data Science](#aimachine-learningdata-science)
+   - [How Did We Get Here?](#how-did-we-get-here)
+   - [Types of Machine Learning](#types-of-machine-learning)
+   - [What Is Machine Learning? Round 2](#what-is-machine-learning-round-2)
+   - controllers
    - routes
    - models
    - services
