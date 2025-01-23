@@ -7,7 +7,7 @@
 1. [Pendahuluan](#pendahuluan)  
 2. [Database](#database)  
 3. [Struktur Proyek](#struktur-proyek)  
-4. [Penjelasan Folder dan File](#penjelasan-folder-dan-file)  
+4. [Penjelasan Detail Struktur Folder dan File](#penjelasan-detail-struktur-folder-dan-file)  
    - a. **controllers**  
    - b. **routes**  
    - c. **models**  
@@ -379,7 +379,7 @@ Folder ini berisi utilitas yang bersifat reusable untuk mendukung berbagai fungs
 
 **[⬆ kembali ke atas](#daftar-isi)**
 
-### **Penjelasan Struktur Folder dan File**
+### **Penjelasan Detail Struktur Folder dan File**
 
 #### **1. Folder `controllers`**
 Folder ini berisi logika utama (business logic) untuk menangani berbagai fitur aplikasi. Setiap controller memisahkan logika berdasarkan modul atau fitur tertentu.
