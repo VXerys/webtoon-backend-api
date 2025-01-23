@@ -383,7 +383,11 @@ Folder ini berisi utilitas yang bersifat reusable untuk mendukung berbagai fungs
 
 **[⬆ kembali ke atas](#daftar-isi)**
 
-### **Penjelasan Folder dan File: `controllers/authController.js`**
+### **Penjelasan Folder dan File**
+
+#### a. controllers
+
+### authController.js
 
 File `authController.js` menangani autentikasi pengguna seperti registrasi, verifikasi, dan pengelolaan token. Berikut adalah penjelasan kode yang dibagi ke dalam beberapa bagian untuk kejelasan.
 
