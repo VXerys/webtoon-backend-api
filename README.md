@@ -284,4 +284,5 @@ Desain tabel dirancang untuk meminimalkan duplikasi data dan memastikan performa
 
 --- 
 
-**[⬆ back to top](#Daftar Isi)
+**[⬆ back to top](#daftar-isi)**
+**[⬆ back to top](#table-of-contents)**
