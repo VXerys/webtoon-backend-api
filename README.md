@@ -382,3 +382,156 @@ Folder ini berisi utilitas yang bersifat reusable untuk mendukung berbagai fungs
 ---
 
 **[⬆ kembali ke atas](#daftar-isi)**
+
+### **Penjelasan Folder dan File: `controllers/authController.js`**
+
+File `authController.js` menangani autentikasi pengguna seperti registrasi, verifikasi, dan pengelolaan token. Berikut adalah penjelasan kode yang dibagi ke dalam beberapa bagian untuk kejelasan.
+
+---
+
+#### **1. Module Require**
+
+```javascript
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+const db = require('../db/connection');
+const { sendVerificationEmail, generateVerificationCode } = require('../services/emailService');
+```
+
+**Penjelasan:**
+- **`bcrypt`**: Digunakan untuk hashing password sebelum disimpan ke database, guna meningkatkan keamanan data pengguna.
+- **`crypto`**: Membuat token/kode acak (misalnya, untuk kode verifikasi).
+- **`jsonwebtoken`**: Mengelola token berbasis JWT untuk otentikasi.
+- **`db`**: Koneksi ke database.
+- **`emailService`**: Berisi fungsi tambahan seperti `sendVerificationEmail` (mengirim email verifikasi) dan `generateVerificationCode` (membuat kode unik).
+
+---
+
+#### **2. Fungsi `registerUser`**
+
+##### **Kode: Validasi Password dan Email**
+
+```javascript
+const registerUser = async (req, res) => {
+  try {
+    const { username, email, password, confirmPassword } = req.body;
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ error: 'Password and confirm password do not match.' });
+    }
+
+    const [existingUser] = await db.query(
+      'SELECT * FROM users WHERE email = ?',
+      [email]
+    );
+```
+
+**Penjelasan:**
+- Fungsi ini menerima data pengguna dari `req.body` (username, email, password, dan confirmPassword).
+- Validasi dilakukan untuk memastikan password dan confirmPassword cocok.
+- Mengecek database untuk melihat apakah email sudah terdaftar menggunakan query SQL.
+
+##### **Kode: Jika Email Sudah Ada**
+
+```javascript
+    if (existingUser.length > 0) {
+      if (!existingUser[0].is_verified) {
+        const verificationCode = generateVerificationCode();
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        await db.query(
+          'UPDATE users SET username = ?, password = ?, verification_code = ? WHERE email = ? AND is_verified = false',
+          [username, hashedPassword, verificationCode, email]
+        );
+
+        await sendVerificationEmail(email, verificationCode);
+        return res.json({ message: 'Verification email resent. Please check your email.' });
+      } else {
+        return res.status(400).json({ error: 'Email is already registered and verified.' });
+      }
+    }
+```
+
+**Penjelasan:**
+- Jika email sudah ada namun pengguna belum diverifikasi, data pengguna diperbarui di database, termasuk username, hashed password, dan kode verifikasi baru.
+- Sistem mengirimkan ulang email verifikasi melalui `sendVerificationEmail`.
+
+##### **Kode: Jika Email Belum Ada**
+
+```javascript
+    const verificationCode = generateVerificationCode();
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await db.query(
+      'INSERT INTO users (username, email, password, verification_code) VALUES (?, ?, ?, ?)',
+      [username, email, hashedPassword, verificationCode]
+    );
+
+    await sendVerificationEmail(email, verificationCode);
+    res.json({ message: 'User registered successfully. Check your email for verification.' });
+  } catch (error) {
+    console.error('Error registering user:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+```
+
+**Penjelasan:**
+- Jika email belum ada, data pengguna baru dimasukkan ke dalam database.
+- Password pengguna di-hash menggunakan `bcrypt` untuk mencegah pencurian data password asli.
+- Sistem mengirimkan email verifikasi kepada pengguna untuk memastikan validitas email.
+
+---
+
+#### **3. Fungsi `verifyUser`**
+
+##### **Kode: Cek Pengguna**
+
+```javascript
+const verifyUser = async (req, res) => {
+  try {
+    const { email, verificationCode } = req.body;
+
+    const [user] = await db.query(
+      'SELECT * FROM users WHERE email = ?',
+      [email]
+    );
+
+    if (user.length === 0) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+```
+
+**Penjelasan:**
+- Fungsi ini menerima email dan kode verifikasi dari `req.body`.
+- Sistem mengecek database untuk memastikan pengguna dengan email tersebut ada.
+
+##### **Kode: Verifikasi Kode**
+
+```javascript
+    if (user[0].verification_code !== verificationCode) {
+      return res.status(401).json({ error: 'Invalid verification code' });
+    }
+
+    await db.query(
+      'UPDATE users SET is_verified = true, verification_code = NULL WHERE id = ?',
+      [user[0].id]
+    );
+
+    res.json({ message: 'User verified successfully' });
+  } catch (error) {
+    console.error('Error verifying user:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+```
+
+**Penjelasan:**
+- Memastikan kode verifikasi yang dimasukkan pengguna sesuai dengan yang ada di database.
+- Jika cocok, status pengguna diperbarui menjadi terverifikasi (`is_verified = true`), dan kode verifikasi dihapus dari database.
+- Mengembalikan respons sukses kepada klien.
+
+---
+
+**[⬆ kembali ke atas](#daftar-isi)**
