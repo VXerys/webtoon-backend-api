@@ -6,16 +6,17 @@
 
 1. [Pendahuluan](#pendahuluan)  
 2. [Database](#database)  
-3. [Struktur Proyek](#struktur-proyek)  
+3. [Struktur Proyek](#struktur-proyek)
 4. [Penjelasan Detail Struktur Folder dan File](#penjelasan-detail-struktur-folder-dan-file)
    <details>
    <summary>Klik untuk melihat semua langkah</summary>
       
-   - **controllers**
-   - **routes**
-   - **models**
-   - **services**
-   - **middleware**
+   - [**controllers**](#folder-controller)
+   - [**routes**](#folder-routes)
+   - [**middleware**](#folder-middlewware)
+   - [**services**](folder-services)
+   - [**db**](#folder-db)
+   - [**utils**](#folder-utils)
    </details>
 6. [Penjelasan Endpoint API](#penjelasan-endpoint-api)  
 7. [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)  
@@ -468,7 +469,7 @@ Berisi konfigurasi sensitif, seperti:
 - `EMAIL_API_KEY`: Untuk layanan email.
 
 ---
-
+services, db, utils
 #### **8. File `server.js`**
 File utama aplikasi, bertanggung jawab untuk:  
 - Inisialisasi server dengan Express.  
