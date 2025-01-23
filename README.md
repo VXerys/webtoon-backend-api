@@ -10,11 +10,11 @@
 4. [Penjelasan Detail Struktur Folder dan File](#penjelasan-detail-struktur-folder-dan-file)
    <details>
    <summary>Klik untuk melihat semua langkah</summary>
-   - a. **controllers**  
-   - b. **routes**  
-   - c. **models**  
-   - d. **services**  
-   - e. **middleware**  
+   - [Folder `controllers`](#folder-controllers)
+   - [routes](#routes)
+   - [models](#models)
+   - [services](#services)
+   - [middleware](#middleware)
    </details>
 6. [Penjelasan Endpoint API](#penjelasan-endpoint-api)  
 7. [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)  
