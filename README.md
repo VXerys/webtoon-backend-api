@@ -10,11 +10,11 @@
 4. [Penjelasan Detail Struktur Folder dan File](#penjelasan-detail-struktur-folder-dan-file)
    <details>
    <summary>Klik untuk melihat semua langkah</summary>
-   - [Folder `controllers`](#folder-controllers)
-   - [routes](#routes)
-   - [models](#models)
-   - [services](#services)
-   - [middleware](#middleware)
+   - controllers
+   - routes
+   - models
+   - services
+   - middleware
    </details>
 6. [Penjelasan Endpoint API](#penjelasan-endpoint-api)  
 7. [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)  
@@ -334,7 +334,7 @@ root/
 
 ### **Penjelasan Detail Struktur Folder dan File**
 
-#### **1. Folder `controllers`**
+#### **1 Folder `controllers`**
 Folder ini berisi logika utama (business logic) untuk menangani berbagai fitur aplikasi. Setiap controller memisahkan logika berdasarkan modul atau fitur tertentu.
 
 - **`authController.js`**  
