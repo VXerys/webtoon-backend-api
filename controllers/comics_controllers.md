@@ -245,3 +245,236 @@ Tidak ada parameter query yang diperlukan untuk endpoint ini.
 - Endpoint ini mengembalikan semua data dari tabel `comics` tanpa filter atau batasan. Jika dataset besar, pertimbangkan untuk menambahkan **pagination** atau **filter** berdasarkan kebutuhan.
 - Middleware otentikasi dapat ditambahkan untuk memastikan bahwa hanya pengguna yang memiliki hak akses yang dapat mengambil data ini.
 
+---
+
+### **Fungsi: `editComic`**
+
+#### **Deskripsi**
+Fungsi `editComic` digunakan untuk mengedit data komik yang sudah ada di tabel `comics` pada database berdasarkan `id` komik. Data yang diubah diperoleh dari body permintaan, dan jika berhasil, sistem akan memberikan respons sukses.
+
+---
+
+### **Penjelasan Kode**
+
+#### **Langkah-Langkah dalam Fungsi**
+
+1. **Pengambilan Parameter dan Body Request**
+   ```javascript
+   const { id } = req.params;
+   const { title, genre, description, creator_id, cover_image_url, status } = req.body;
+   ```
+   - Parameter `id` diambil dari URL endpoint.
+   - Data komik yang akan diubah diambil dari `req.body`.
+
+2. **Validasi Input**
+   ```javascript
+   if (!title || !creator_id) {
+       return res.status(400).json({ message: 'Title and creator_id are required' });
+   }
+   ```
+   - Memastikan bahwa `title` dan `creator_id` wajib disertakan dalam body request.
+   - Jika salah satu tidak ada, fungsi akan mengembalikan status `400 Bad Request` dengan pesan error.
+
+3. **Eksekusi Query untuk Memperbarui Data**
+   ```javascript
+   await db.query(
+       'UPDATE comics SET title = ?, genre = ?, description = ?, creator_id = ?, cover_image_url = ?, status = ? WHERE id = ?',
+       [title, genre, description, creator_id, cover_image_url, status, id]
+   );
+   ```
+   - Query SQL `UPDATE` digunakan untuk memperbarui data komik berdasarkan `id`.
+   - Nilai-nilai baru untuk kolom yang ingin diubah diambil dari `req.body`.
+
+4. **Pengembalian Respons Sukses**
+   ```javascript
+   res.status(200).json({ message: 'Comic updated successfully' });
+   ```
+   - Jika query berhasil, fungsi akan mengembalikan status `200 OK` dengan pesan sukses.
+
+5. **Penanganan Error**
+   ```javascript
+   } catch (error) {
+       console.error('Error updating comic:', error);
+       res.status(500).json({ message: 'Internal server error' });
+   }
+   ```
+   - Jika terjadi kesalahan selama proses pembaruan, error akan ditangkap dan sistem mengembalikan status `500 Internal Server Error` dengan pesan error.
+
+---
+
+### **Endpoint: Edit Comic**
+
+#### **URL**
+**`PUT /api/comics/:id`**
+
+---
+
+#### **Header**
+Content-Type: `application/json`
+
+---
+
+#### **Path Parameters**
+- **`id`** *(required)*: ID komik yang ingin diperbarui.
+
+---
+
+#### **Body Request**
+Body request harus dalam format JSON dengan struktur berikut:
+```json
+{
+  "title": "string",
+  "genre": "string",
+  "description": "string",
+  "creator_id": "integer",
+  "cover_image_url": "string",
+  "status": "string"
+}
+```
+
+---
+
+#### **Proses di Backend**
+1. **Validasi Input**:
+   - Memastikan bahwa `title` dan `creator_id` ada dalam body request.
+2. **Eksekusi Query SQL**:
+   - Sistem memperbarui data komik berdasarkan `id`.
+3. **Pengembalian Respons**:
+   - Memberikan respons sukses jika pembaruan berhasil.
+4. **Penanganan Error**:
+   - Menangkap kesalahan selama proses pembaruan dan memberikan respons error.
+
+---
+
+#### **Respon**
+##### **Respon Sukses**
+**Status Code**: `200 OK`  
+**Body**:
+```json
+{
+  "message": "Comic updated successfully"
+}
+```
+
+##### **Respon Gagal**
+1. **Input Tidak Valid**
+   **Status Code**: `400 Bad Request`  
+   **Body**:
+   ```json
+   {
+     "message": "Title and creator_id are required"
+   }
+   ```
+
+2. **Kesalahan Server**
+   **Status Code**: `500 Internal Server Error`  
+   **Body**:
+   ```json
+   {
+     "message": "Internal server error"
+   }
+   ```
+
+---
+
+#### **Catatan**
+- Endpoint ini hanya memperbarui data berdasarkan ID yang diberikan. Jika ID tidak ditemukan, sistem tetap akan mengembalikan respons sukses tetapi tidak ada data yang diperbarui.
+- Middleware otentikasi dapat ditambahkan untuk membatasi akses hanya kepada pengguna yang berwenang.
+
+---
+
+### **Fungsi: `deleteComic`**
+
+#### **Deskripsi**
+Fungsi `deleteComic` digunakan untuk menghapus data komik dari tabel `comics` pada database berdasarkan `id` yang diberikan dalam parameter URL. Jika berhasil, sistem akan mengembalikan pesan sukses.
+
+---
+
+### **Penjelasan Kode**
+
+#### **Langkah-Langkah dalam Fungsi**
+
+1. **Pengambilan Parameter Request**
+   ```javascript
+   const { id } = req.params;
+   ```
+   - Parameter `id` diambil dari URL endpoint, yang mewakili ID komik yang akan dihapus.
+
+2. **Eksekusi Query untuk Menghapus Data**
+   ```javascript
+   db.query('DELETE FROM comics WHERE id = ?', [id]);
+   ```
+   - Query SQL `DELETE` digunakan untuk menghapus data dari tabel `comics` berdasarkan `id`.
+   - ID komik yang diberikan disisipkan sebagai parameter query untuk mencegah SQL Injection.
+
+3. **Pengembalian Respons Sukses**
+   ```javascript
+   res.status(200).json({ message: 'Comic deleted successfully' });
+   ```
+   - Jika query berhasil, fungsi akan mengembalikan status `200 OK` dengan pesan sukses.
+
+4. **Penanganan Error**
+   ```javascript
+   } catch (error) {
+       console.error('Error deleting comic:', error);
+       res.status(500).json({ message: 'Internal server error' });
+   }
+   ```
+   - Jika terjadi kesalahan selama proses penghapusan, error akan ditangkap, dan sistem mengembalikan status `500 Internal Server Error` dengan pesan error.
+
+---
+
+### **Endpoint: Delete Comic**
+
+#### **URL**
+**`DELETE /api/comics/:id`**
+
+---
+
+#### **Header**
+Tidak memerlukan header khusus.
+
+---
+
+#### **Path Parameters**
+- **`id`** *(required)*: ID komik yang ingin dihapus.
+
+---
+
+#### **Proses di Backend**
+1. **Pengambilan ID Komik**:
+   - Sistem membaca `id` dari parameter URL.
+2. **Eksekusi Query SQL**:
+   - Sistem menghapus data komik dari tabel `comics` berdasarkan `id`.
+3. **Pengembalian Respons**:
+   - Memberikan respons sukses jika data berhasil dihapus.
+4. **Penanganan Error**:
+   - Menangkap kesalahan selama proses penghapusan dan memberikan respons error.
+
+---
+
+#### **Respon**
+##### **Respon Sukses**
+**Status Code**: `200 OK`  
+**Body**:
+```json
+{
+  "message": "Comic deleted successfully"
+}
+```
+
+##### **Respon Gagal**
+1. **Kesalahan Server**
+   **Status Code**: `500 Internal Server Error`  
+   **Body**:
+   ```json
+   {
+     "message": "Internal server error"
+   }
+   ```
+
+---
+
+#### **Catatan**
+- Pastikan bahwa ID yang diberikan adalah valid dan ada di database. Jika ID tidak ditemukan, sistem tetap akan memberikan respons sukses meskipun tidak ada data yang dihapus.
+- Middleware otentikasi dan otorisasi dapat ditambahkan untuk memastikan hanya pengguna tertentu yang memiliki izin untuk menghapus data ini.

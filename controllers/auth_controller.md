@@ -1,3 +1,6 @@
+
+
+
 ### **Penjelasan Kode: registerUser**
 
 #### **Deskripsi Fungsi**
@@ -303,24 +306,24 @@ Berikut adalah dokumentasi untuk endpoint yang menggunakan fungsi `verifyUser`:
 
 ---
 
-### **Endpoint: Verifikasi Akun Pengguna**
+#### **Endpoint: Verifikasi Akun Pengguna**
 
-#### **Deskripsi**
+##### **Deskripsi**
 Endpoint ini digunakan untuk memverifikasi akun pengguna yang telah didaftarkan. Pengguna harus memasukkan email dan kode verifikasi yang diterima melalui email untuk menyelesaikan proses verifikasi.
 
 ---
 
-#### **URL**
+##### **URL**
 **`POST /api/auth/verify`**
 
 ---
 
-#### **Header**
+##### **Header**
 - **Content-Type**: `application/json`
 
 ---
 
-#### **Body Parameters**
+##### **Body Parameters**
 | Parameter         | Tipe Data | Wajib  | Deskripsi                                           |
 |--------------------|-----------|--------|---------------------------------------------------|
 | `email`           | String    | Ya     | Alamat email pengguna yang akan diverifikasi.      |
@@ -328,7 +331,7 @@ Endpoint ini digunakan untuk memverifikasi akun pengguna yang telah didaftarkan.
 
 ---
 
-#### **Proses di Backend**
+##### **Proses di Backend**
 1. **Penerimaan Data**: 
    - Backend menerima `email` dan `verificationCode` dari body request.
 2. **Pencarian Data Pengguna**:
@@ -345,7 +348,7 @@ Endpoint ini digunakan untuk memverifikasi akun pengguna yang telah didaftarkan.
 
 ---
 
-#### **Respon**
+##### **Respon**
 ##### **Respon Sukses**
 **Status Code**: `200 OK`  
 **Body**:
@@ -402,7 +405,7 @@ Fungsi `loginUser` digunakan untuk melakukan autentikasi pengguna. Dengan memasu
 
 ---
 
-### **Penjelasan Kode**
+#### **Penjelasan Kode**
 
 #### **Langkah-Langkah dalam Fungsi**
 1. **Penerimaan Data dari Request Body**
@@ -488,19 +491,19 @@ Fungsi `loginUser` digunakan untuk melakukan autentikasi pengguna. Dengan memasu
 
 ---
 
-### **Endpoint: Login Pengguna**
+#### **Endpoint: Login Pengguna**
 
-#### **URL**
+##### **URL**
 **`POST /api/auth/login`**
 
 ---
 
-#### **Header**
+##### **Header**
 - **Content-Type**: `application/json`
 
 ---
 
-#### **Body Parameters**
+##### **Body Parameters**
 | Parameter   | Tipe Data | Wajib | Deskripsi                                           |
 |-------------|-----------|-------|---------------------------------------------------|
 | `email`     | String    | Ya    | Alamat email pengguna untuk autentikasi.           |
@@ -508,7 +511,7 @@ Fungsi `loginUser` digunakan untuk melakukan autentikasi pengguna. Dengan memasu
 
 ---
 
-#### **Proses di Backend**
+##### **Proses di Backend**
 1. **Validasi Input**: 
    - Pastikan `email` dan `password` tidak kosong.
 2. **Pencarian Data Pengguna**:
@@ -525,8 +528,8 @@ Fungsi `loginUser` digunakan untuk melakukan autentikasi pengguna. Dengan memasu
 
 ---
 
-#### **Respon**
-##### **Respon Sukses**
+##### **Respon**
+###### **Respon Sukses**
 **Status Code**: `200 OK`  
 **Body**:
 ```json
@@ -536,7 +539,7 @@ Fungsi `loginUser` digunakan untuk melakukan autentikasi pengguna. Dengan memasu
 }
 ```
 
-##### **Respon Gagal**
+###### **Respon Gagal**
 1. **Email atau Password Kosong**
    **Status Code**: `400 Bad Request`  
    **Body**:
@@ -584,7 +587,7 @@ Fungsi `loginUser` digunakan untuk melakukan autentikasi pengguna. Dengan memasu
 
 ---
 
-#### **Catatan**
+###### **Catatan**
 - Pastikan variabel lingkungan `JWT_SECRET` telah diatur dengan nilai yang aman untuk menghasilkan token JWT.
 - Endpoint ini digunakan sebelum mengakses endpoint lain yang memerlukan autentikasi.
 
@@ -601,7 +604,7 @@ Fungsi `resetPassword` memungkinkan pengguna untuk mengatur ulang kata sandi mer
 
 ---
 
-### **Penjelasan Kode**
+#### **Penjelasan Kode**
 
 #### **Langkah-Langkah dalam Fungsi**
 
@@ -689,19 +692,19 @@ Fungsi `resetPassword` memungkinkan pengguna untuk mengatur ulang kata sandi mer
 
 ---
 
-### **Endpoint: Reset Password**
+#### **Endpoint: Reset Password**
 
-#### **URL**
+##### **URL**
 **`POST /api/auth/reset-password`**
 
 ---
 
-#### **Header**
+##### **Header**
 - **Content-Type**: `application/json`
 
 ---
 
-#### **Body Parameters**
+##### **Body Parameters**
 | Parameter        | Tipe Data | Wajib | Deskripsi                                                           |
 |------------------|-----------|-------|---------------------------------------------------------------------|
 | `email`          | String    | Ya    | Email pengguna yang ingin mengatur ulang kata sandinya.              |
@@ -711,7 +714,7 @@ Fungsi `resetPassword` memungkinkan pengguna untuk mengatur ulang kata sandi mer
 
 ---
 
-#### **Proses di Backend**
+##### **Proses di Backend**
 1. **Validasi Input**:
    - Memastikan semua data wajib (`email`, `newPassword`, `confirmPassword`, `resetToken`) telah disediakan.
    - Memastikan kata sandi baru dan konfirmasinya cocok.
@@ -729,8 +732,8 @@ Fungsi `resetPassword` memungkinkan pengguna untuk mengatur ulang kata sandi mer
 
 ---
 
-#### **Respon**
-##### **Respon Sukses**
+##### **Respon**
+###### **Respon Sukses**
 **Status Code**: `200 OK`  
 **Body**:
 ```json
@@ -739,7 +742,7 @@ Fungsi `resetPassword` memungkinkan pengguna untuk mengatur ulang kata sandi mer
 }
 ```
 
-##### **Respon Gagal**
+###### **Respon Gagal**
 1. **Data Tidak Lengkap**
    **Status Code**: `400 Bad Request`  
    **Body**:
@@ -787,7 +790,7 @@ Fungsi `resetPassword` memungkinkan pengguna untuk mengatur ulang kata sandi mer
 
 ---
 
-#### **Catatan**
+###### **Catatan**
 - Endpoint ini memerlukan token reset yang valid untuk memastikan keamanan.
 - Proses hashing kata sandi menggunakan `bcrypt` memastikan bahwa data sensitif tidak disimpan dalam bentuk teks biasa.
 
@@ -804,7 +807,7 @@ Fungsi `requestResetPassword` digunakan untuk mengirim permintaan pengaturan ula
 
 ---
 
-### **Penjelasan Kode**
+#### **Penjelasan Kode**
 
 #### **Langkah-Langkah dalam Fungsi**
 
@@ -884,7 +887,7 @@ Fungsi `requestResetPassword` digunakan untuk mengirim permintaan pengaturan ula
 
 ---
 
-### **Endpoint: Request Reset Password**
+#### **Endpoint: Request Reset Password**
 
 #### **URL**
 **`POST /api/auth/request-reset-password`**
@@ -970,7 +973,7 @@ Fungsi `requestResetPassword` digunakan untuk mengirim permintaan pengaturan ula
 
 ---
 
-#### **Catatan**
+##### **Catatan**
 - Endpoint ini hanya menghasilkan token reset jika email pengguna terdaftar dan telah diverifikasi.
 - Proses pengiriman token reset dilakukan melalui email untuk menjaga keamanan.
 
