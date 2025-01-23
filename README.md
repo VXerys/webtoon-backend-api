@@ -56,6 +56,8 @@ Baik, kita akan melanjutkan ke bagian **Database**. Berikut adalah penjelasan da
 
 ---
 
+**[⬆ kembali ke atas](#daftar-isi)**
+
 ## **Database**
 
 Database yang digunakan untuk proyek ini dirancang untuk mendukung fitur dan fungsionalitas aplikasi webtoon backend secara efisien. Struktur database mencakup tabel-tabel inti yang saling berhubungan melalui relasi untuk memastikan integritas data dan mempermudah pengambilan informasi.
@@ -284,5 +286,4 @@ Desain tabel dirancang untuk meminimalkan duplikasi data dan memastikan performa
 
 --- 
 
-**[⬆ back to top](#daftar-isi)**
-**[⬆ back to top](#table-of-contents)**
+**[⬆ kembali ke atas](#daftar-isi)**
