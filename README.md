@@ -11,7 +11,7 @@
    <details>
    <summary>Klik untuk melihat semua langkah</summary>
       
-   - [**Folder controllers**](#folder-controller)
+   - [**controllers**](#1-folder-controller)
    - [**routes**](#folder-routes)
    - [**middleware**](#folder-middlewware)
    - [**services**](folder-services)
@@ -336,7 +336,7 @@ root/
 
 ### **Penjelasan Detail Struktur Folder dan File**
 
-#### **Folder `controllers`**
+#### **1. Folder `controllers`**
 Folder ini berisi logika utama (business logic) untuk menangani berbagai fitur aplikasi. Setiap controller memisahkan logika berdasarkan modul atau fitur tertentu.
 
 - **`authController.js`**  
