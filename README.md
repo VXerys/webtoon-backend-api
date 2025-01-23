@@ -46,9 +46,8 @@ Aplikasi ini ditujukan bagi pengembang atau tim pengembang yang ingin membuat pl
 ### **Teknologi yang Digunakan**
 1. **Node.js & Express**: Untuk pengembangan server backend yang cepat dan ringan.
 2. **MySQL**: Sebagai database relasional untuk menyimpan data aplikasi.
-3. **Prisma ORM**: Mempermudah interaksi dengan database melalui query yang sederhana dan efisien.
-4. **JWT**: Untuk autentikasi berbasis token yang aman.
-5. **Postman**: Untuk pengujian dan dokumentasi endpoint API.
+3. **JWT**: Untuk autentikasi berbasis token yang aman.
+4. **Postman**: Untuk pengujian dan dokumentasi endpoint API.
 
 ### **Penerapan Proyek**
 Proyek ini cocok digunakan untuk platform yang ingin memberikan pengalaman membaca komik yang interaktif dan terorganisir dengan baik. Selain itu, backend ini mudah diperluas untuk menambahkan fitur baru seperti komentar, sistem penilaian, atau pengelolaan langganan pengguna di masa depan.
