@@ -4,8 +4,8 @@
 
 ## **Daftar Isi**
 
-1. [Pendahuluan](##pendahuluan)  
-2. [Database](##database)  
+1. [Pendahuluan](#pendahuluan)  
+2. [Database](#database)  
 3. [Struktur Proyek](#struktur-proyek)  
 4. [Penjelasan Folder dan File](#penjelasan-folder-dan-file)  
    - a. **controllers**  
@@ -22,7 +22,7 @@
 
 ---
 
-## **1. Pendahuluan**
+## **Pendahuluan**
 
 ### **Deskripsi Proyek**
 Webtoon Backend API adalah sebuah proyek backend yang dirancang untuk mendukung aplikasi membaca komik digital (webtoon). Proyek ini memungkinkan pengelolaan data komik, episode, pengguna, serta menyediakan fitur autentikasi, otorisasi, dan pengelolaan akun. Backend ini dibangun dengan teknologi modern untuk memastikan performa, skalabilitas, dan keamanan yang optimal.
