@@ -13,7 +13,7 @@
       
    - [**controllers**](#1-folder-controllers)
    - [**routes**](#2-folder-routes)
-   - [**middleware**](#3-folder-middlewware)
+   - [**middleware**](#3-folder-middleware)
    - [**services**](#4-folder-services)
    - [**db**](#5-folder-db)
    - [**utils**](#6-folder-utils)
