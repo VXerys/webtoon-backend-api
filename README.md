@@ -1107,6 +1107,7 @@ Mengembalikan daftar komentar yang terkait dengan episode tersebut, beserta meta
 
 ---
 
+**[⬆ kembali ke atas](#daftar-isi)**
 
 ## **Kode Utama dan Fungsionalitas**
 
