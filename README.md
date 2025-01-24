@@ -486,10 +486,6 @@ File ini berisi metadata proyek, daftar dependensi, dan script untuk menjalankan
 
 **[⬆ kembali ke atas](#daftar-isi)**
 
-Berikut adalah penjelasan untuk **Endpoint API** khusus untuk folder `Auth`, dengan format yang rapi dan tambahan teks untuk menampilkan screenshot endpoint:
-
----
-
 ### **Penjelasan Endpoint API**
 
 #### **a. Auth**
@@ -642,7 +638,4 @@ POST /api/auth/forgot-password
 
 ---
 
-#### **Catatan:**  
-Setiap endpoint di atas memerlukan pengaturan tertentu di database, seperti email pengguna harus unik, password di-hash, dan token disimpan dengan aman.
-
-Dengan format seperti ini, penjelasan menjadi lebih terstruktur, setiap endpoint dijelaskan dengan rinci, dan ada placeholder untuk menampilkan screenshot dari Postman. Jika ada tambahan atau perubahan, beri tahu saya!
+**[⬆ kembali ke atas](#daftar-isi)**
