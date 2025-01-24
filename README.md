@@ -486,18 +486,22 @@ File ini berisi metadata proyek, daftar dependensi, dan script untuk menjalankan
 
 **[⬆ kembali ke atas](#daftar-isi)**
 
+Berikut adalah revisi lengkap untuk bagian **Auth**, dengan penambahan endpoint **Reset Password** dan **Request Reset Password Code**. Saya juga memastikan setiap endpoint dijelaskan secara rinci dengan struktur yang rapi.
+
+---
+
 ### **Penjelasan Endpoint API**
 
 #### **a. Auth**
 
-Folder `Auth` menangani autentikasi pengguna, termasuk fitur seperti registrasi, login, verifikasi email, dan pengelolaan token. Berikut adalah endpoint yang tersedia di folder ini:
+Folder `Auth` digunakan untuk mengelola autentikasi dan manajemen pengguna, termasuk registrasi, login, verifikasi email, serta pemulihan kata sandi. Berikut adalah daftar endpoint yang tersedia:
 
 ---
 
-#### **1. POST /api/auth/register**
+#### **1. POST /auth/register**
 
 **Deskripsi:**  
-Endpoint ini digunakan untuk mendaftarkan pengguna baru. Data yang dikirimkan harus mencakup:
+Endpoint ini digunakan untuk mendaftarkan pengguna baru. Data yang diperlukan adalah:
 - **`username`**: Nama pengguna.
 - **`email`**: Alamat email pengguna.
 - **`password`**: Kata sandi.
@@ -506,7 +510,7 @@ Endpoint ini digunakan untuk mendaftarkan pengguna baru. Data yang dikirimkan ha
 **Contoh Request:**
 
 ```json
-POST /api/auth/register
+POST /auth/register
 {
   "username": "JohnDoe",
   "email": "johndoe@example.com",
@@ -515,9 +519,8 @@ POST /api/auth/register
 }
 ```
 
-**Respons:**
-- Jika berhasil, akan mengembalikan pesan bahwa registrasi berhasil dan meminta pengguna memverifikasi email mereka.
-- Jika gagal (contoh: email sudah digunakan atau password tidak cocok), akan mengembalikan pesan error.
+**Respons:**  
+Jika berhasil, pengguna akan menerima email verifikasi. Jika gagal, akan mengembalikan pesan error.
 
 **Contoh Respons:**
 
@@ -529,66 +532,30 @@ POST /api/auth/register
 
 **Screenshot:**  
 *Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
-> ![register](https://github.com/user-attachments/assets/593e3c6d-e913-43bd-87a8-1dd902420e71)
+> ![register](https://github.com/user-attachments/assets/48d839c0-d234-4d1e-83f6-13ff4efbe103)
 
 
 ---
 
-#### **2. POST /api/auth/verify**
+#### **2. POST /auth/login**
 
 **Deskripsi:**  
-Endpoint ini digunakan untuk memverifikasi akun pengguna berdasarkan email dan kode verifikasi. Data yang diperlukan:
-- **`email`**: Alamat email pengguna.
-- **`verificationCode`**: Kode verifikasi yang diterima melalui email.
-
-**Contoh Request:**
-
-```json
-POST /api/auth/verify
-{
-  "email": "johndoe@example.com",
-  "verificationCode": "123456"
-}
-```
-
-**Respons:**
-- Jika berhasil, akan mengembalikan pesan bahwa akun berhasil diverifikasi.
-- Jika gagal (contoh: kode tidak valid atau akun tidak ditemukan), akan mengembalikan pesan error.
-
-**Contoh Respons:**
-
-```json
-{
-  "message": "User verified successfully."
-}
-```
-
-**Screenshot:**  
-*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
-> ![Screenshot: Hasil Test POST /api/auth/verify](#)
-
----
-
-#### **3. POST /api/auth/login**
-
-**Deskripsi:**  
-Endpoint ini digunakan untuk login pengguna. Data yang dikirimkan harus mencakup:
+Endpoint ini digunakan untuk login pengguna. Data yang diperlukan adalah:
 - **`email`**: Alamat email pengguna.
 - **`password`**: Kata sandi pengguna.
 
 **Contoh Request:**
 
 ```json
-POST /api/auth/login
+POST /auth/login
 {
   "email": "johndoe@example.com",
   "password": "securepassword123"
 }
 ```
 
-**Respons:**
-- Jika berhasil, akan mengembalikan token JWT untuk keperluan autentikasi pengguna.
-- Jika gagal (contoh: email atau password salah), akan mengembalikan pesan error.
+**Respons:**  
+Jika berhasil, akan mengembalikan token JWT untuk autentikasi. Jika gagal, pesan error akan diberikan.
 
 **Contoh Respons:**
 
@@ -601,41 +568,544 @@ POST /api/auth/login
 
 **Screenshot:**  
 *Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
-> ![Screenshot: Hasil Test POST /api/auth/login](#)
+> ![login](https://github.com/user-attachments/assets/b7136e5a-38bd-440f-adc5-7bda06ae8e05)
+
 
 ---
 
-#### **4. POST /api/auth/forgot-password**
+#### **3. POST /auth/verify**
 
 **Deskripsi:**  
-Endpoint ini digunakan untuk meminta reset password jika pengguna lupa kata sandi. Data yang diperlukan:
+Endpoint ini digunakan untuk memverifikasi akun pengguna. Data yang diperlukan adalah:
 - **`email`**: Alamat email pengguna.
+- **`verificationCode`**: Kode verifikasi yang dikirim melalui email.
 
 **Contoh Request:**
 
 ```json
-POST /api/auth/forgot-password
+POST /auth/verify
 {
-  "email": "johndoe@example.com"
+  "email": "johndoe@example.com",
+  "verificationCode": "123456"
 }
 ```
 
-**Respons:**
-- Jika berhasil, akan mengirimkan email dengan instruksi untuk reset password.
-- Jika gagal (contoh: email tidak terdaftar), akan mengembalikan pesan error.
+**Respons:**  
+Jika berhasil, status akun pengguna diperbarui menjadi terverifikasi.
 
 **Contoh Respons:**
 
 ```json
 {
-  "message": "Password reset email sent. Please check your email."
+  "message": "User verified successfully."
 }
 ```
 
 **Screenshot:**  
 *Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
-> ![Screenshot: Hasil Test POST /api/auth/forgot-password](#)
+> ![verify](https://github.com/user-attachments/assets/6d4c3910-70c6-4efa-b6e0-963d55169d99)
+
 
 ---
+
+#### **4. POST /auth/request-reset-password-code**
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk meminta kode reset password. Data yang diperlukan adalah:
+- **`email`**: Alamat email pengguna.
+
+**Contoh Request:**
+
+```json
+POST /auth/request-reset-password-code
+{
+  "email": "johndoe@example.com"
+}
+```
+
+**Respons:**  
+Jika berhasil, sistem akan mengirimkan kode reset password ke email pengguna.
+
+**Contoh Respons:**
+
+```json
+{
+  "message": "Reset password code sent. Please check your email."
+}
+```
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![request-reset-password](https://github.com/user-attachments/assets/cd27644a-8ca3-42e7-afdc-c68796ab5928)
+
+
+---
+
+#### **5. POST /auth/reset-password**
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk mereset kata sandi pengguna. Data yang diperlukan adalah:
+- **`email`**: Alamat email pengguna.
+- **`verificationCode`**: Kode verifikasi untuk reset password.
+- **`newPassword`**: Kata sandi baru.
+- **`confirmPassword`**: Konfirmasi kata sandi baru.
+
+**Contoh Request:**
+
+```json
+POST /auth/reset-password
+{
+  "email": "johndoe@example.com",
+  "verificationCode": "123456",
+  "newPassword": "newpassword123",
+  "confirmPassword": "newpassword123"
+}
+```
+
+**Respons:**  
+Jika berhasil, sistem akan memperbarui kata sandi pengguna di database.
+
+**Contoh Respons:**
+
+```json
+{
+  "message": "Password reset successfully."
+}
+```
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![5-reset-password](https://github.com/user-attachments/assets/c80ed721-7e40-4c39-96b9-fbca23d632af)
+
+---
+
+
+#### **b. Comics**
+
+Folder `Comics` digunakan untuk mengelola data komik, mulai dari membuat, membaca, mengedit, hingga menghapus data komik. Berikut adalah daftar endpoint yang tersedia:
+
+---
+
+#### **1. POST /comics/create**
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk membuat komik baru. Data yang diperlukan adalah:
+- **`title`**: Judul komik.
+- **`description`**: Deskripsi singkat komik.
+- **`author`**: Nama penulis komik.
+- **`genres`**: Genre komik (array string).
+- **`coverImage`**: URL atau path gambar sampul komik.
+
+**Contoh Request:**
+
+```json
+POST /comics/create
+{
+  "title": "Amazing Comic",
+  "description": "An incredible journey of a hero.",
+  "author": "John Doe",
+  "genres": ["Adventure", "Fantasy"],
+  "coverImage": "https://example.com/comic-cover.jpg"
+}
+```
+
+**Respons:**  
+Jika berhasil, akan mengembalikan data komik yang baru dibuat.
+
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![1-create-comics](https://github.com/user-attachments/assets/de6cda87-010f-4a84-a20a-2a72ab6cdd3c)
+
+
+---
+
+#### **2. GET /comics**
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk mengambil semua data komik yang tersedia. Mendukung fitur filter dan pagination melalui parameter query opsional:
+- **`page`** (opsional): Halaman data yang diinginkan.
+- **`limit`** (opsional): Jumlah data per halaman.
+- **`genre`** (opsional): Filter berdasarkan genre.
+
+**Contoh Request:**
+
+```json
+GET /comics?page=1&limit=10&genre=Adventure
+```
+
+**Respons:**  
+Mengembalikan daftar komik beserta metadata pagination.
+
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![2-get-all-comic](https://github.com/user-attachments/assets/2628cfbb-97cd-48f1-96fc-e9317bcb2b84)
+
+
+---
+
+#### **3. PUT /comics/edit/4
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk mengedit data komik berdasarkan ID. Data yang dapat diubah adalah:
+- **`title`**
+- **`description`**
+- **`author`**
+- **`genres`**
+- **`coverImage`**
+
+**Contoh Request:**
+
+**Respons:**  
+Jika berhasil, data komik yang telah diperbarui akan dikembalikan.
+
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![3-editComic](https://github.com/user-attachments/assets/2d2520c5-3900-4886-a147-e78f6090d549)
+
+
+---
+
+#### **4. GET /comics/4
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk mengambil detail data komik berdasarkan ID.
+
+**Contoh Request:**
+
+```json
+GET /api/comics/4
+```
+
+**Respons:**  
+Mengembalikan data komik secara lengkap berdasarkan ID.
+
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![4-getComicById](https://github.com/user-attachments/assets/8e545dae-4108-45c3-886f-a4fdb5a93623)
+
+
+---
+
+#### **5. DELETE /comics/delete/3
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk menghapus data komik berdasarkan ID.
+
+**Contoh Request:**
+
+```json
+DELETE /api/comics/1
+```
+
+**Respons:**  
+Jika berhasil, akan mengembalikan pesan konfirmasi penghapusan.
+
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![5-deleteComic](https://github.com/user-attachments/assets/f1644de2-6203-4e85-ae4f-7b7148c4178b)
+
+
+---
+
+Berikut adalah penjelasan endpoint untuk **Episode**, disusun dengan format yang konsisten dan detail seperti sebelumnya.
+
+---
+
+
+#### **c. Episode**
+
+Folder `Episode` digunakan untuk mengelola data episode dari sebuah komik, termasuk membuat episode baru, membaca daftar episode berdasarkan ID komik, mengedit, menghapus, dan melihat detail dari sebuah episode tertentu. Berikut daftar endpoint yang tersedia:
+
+---
+
+#### **1. POST /episodes/create
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk membuat episode baru untuk sebuah komik yang telah ada. Data yang diperlukan adalah:
+- **`comicId`**: ID komik yang menjadi parent dari episode ini.
+- **`title`**: Judul episode.
+- **`content`**: Isi atau konten dari episode (bisa berupa teks atau file gambar).
+- **`episodeNumber`**: Nomor urut episode.
+
+**Contoh Request:**
+
+```json
+POST /episodes/create
+{
+  "comicId": 1,
+  "title": "Episode 1: The Beginning",
+  "content": "https://example.com/episode-1-content.jpg",
+  "episodeNumber": 1
+}
+```
+
+**Respons:**  
+Jika berhasil, data episode yang baru dibuat akan dikembalikan.
+
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![1-create-episode](https://github.com/user-attachments/assets/0fb707d3-a5cb-47d6-aa5c-0b96b3f516ad)
+
+
+---
+
+#### **2. GET /episodes/4
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk mengambil daftar semua episode berdasarkan **ID komik**. Mendukung pagination dengan parameter opsional:
+- **`page`** (opsional): Halaman data yang diinginkan.
+- **`limit`** (opsional): Jumlah data per halaman.
+
+**Contoh Request:**
+
+```json
+GET /episodes/4
+```
+
+**Respons:**  
+Mengembalikan daftar episode yang terdaftar dalam komik tersebut, beserta metadata pagination.
+
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![2-get-all-episode-by-comic-id](https://github.com/user-attachments/assets/a8a5709f-1134-4e17-8cd5-5af542d6c925)
+
+
+---
+
+#### **3. PUT /episodes/edit/10
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk mengedit data episode berdasarkan ID episode. Data yang dapat diubah adalah:
+- **`title`**
+- **`content`**
+- **`episodeNumber`**
+
+**Contoh Request:**
+
+```json
+PUT /episodes/edit/10
+{
+  "title": "Episode 1: A New Beginning",
+  "content": "https://example.com/updated-episode-1-content.jpg",
+  "episodeNumber": 1
+}
+```
+
+**Respons:**  
+Jika berhasil, data episode yang telah diperbarui akan dikembalikan.
+
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![3-edit-episode](https://github.com/user-attachments/assets/139a7db6-d531-4776-94dc-9d7cb8b95081)
+
+
+---
+
+#### **4. GET /episodes/details/12
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk mengambil detail lengkap dari sebuah episode berdasarkan **ID episode**.
+
+**Contoh Request:**
+
+```json
+GET /episodes/details/12
+```
+
+**Respons:**  
+Mengembalikan detail episode yang diminta.
+
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![4-detail-episode](https://github.com/user-attachments/assets/d8514c7f-7069-490e-b271-c7139f9dc8d7)
+
+
+---
+
+#### **5. DELETE /episodes/delete/12
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk menghapus sebuah episode berdasarkan **ID episode**.
+
+**Contoh Request:**
+
+```json
+DELETE /episodes/delete/12
+```
+
+**Respons:**  
+Jika berhasil, akan mengembalikan pesan konfirmasi penghapusan.
+
+**Contoh Respons:**
+
+```json
+{
+  "message": "Episode deleted successfully."
+}
+```
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![5-delete-episode](https://github.com/user-attachments/assets/63390814-a2a5-4275-92c2-5487fb81a92a)
+
+
+---
+
+
+#### **d. Comments**
+
+Folder `Comments` digunakan untuk mengelola komentar yang berkaitan dengan komik dan episode. Komentar dapat ditambahkan, diubah, dihapus, serta diambil berdasarkan ID komik atau ID episode tertentu. Berikut adalah daftar endpoint yang tersedia:
+
+---
+
+#### **1. POST /comments/create-comment
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk menambahkan komentar baru pada sebuah komik atau episode. Data yang diperlukan adalah:
+- **`type`**: Jenis komentar, bisa berupa `"comic"` atau `"episode"`.
+- **`id`**: ID komik atau episode yang ingin diberikan komentar.
+- **`content`**: Isi komentar.
+
+**Contoh Request:**
+
+```json
+POST /comments/create-comment
+{
+  "type": "comic",
+  "id": 1,
+  "content": "This is an amazing comic! Great job!"
+}
+```
+
+**Respons:**  
+Jika berhasil, data komentar yang baru dibuat akan dikembalikan.
+
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![1-create-comment](https://github.com/user-attachments/assets/0a4ab169-331e-4cda-9d7f-c490cd2344f3)
+
+
+---
+
+#### **2. PUT /comments/edit-comment/7
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk mengedit komentar berdasarkan **ID komentar**. Data yang dapat diubah adalah:
+- **`content`**: Isi komentar.
+
+**Contoh Request:**
+
+```json
+PUT /comments/edit-comment/7
+{
+  "content": "This comic is incredible! Can't wait for more."
+}
+```
+
+**Respons:**  
+Jika berhasil, data komentar yang telah diperbarui akan dikembalikan.
+
+**Contoh Respons:**
+
+```json
+{
+  "message": "Comment updated successfully.",
+}
+```
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![2-edit-comment](https://github.com/user-attachments/assets/35800f1e-2572-4767-8b1c-855378b259ec)
+
+
+---
+
+#### **3. DELETE /comments/delete-comment/7
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk menghapus sebuah komentar berdasarkan **ID komentar**.
+
+**Contoh Request:**
+
+```json
+DELETE /comments/delete-comment/7
+```
+
+**Respons:**  
+Jika berhasil, akan mengembalikan pesan konfirmasi penghapusan.
+
+**Contoh Respons:**
+
+```json
+{
+  "message": "Comment deleted successfully."
+}
+```
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![3-deleteComment](https://github.com/user-attachments/assets/cb5f74d5-800c-4e79-a5d0-8447cee6a165)
+
+
+---
+
+#### **4. GET /comments/get-comment/4
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk mengambil semua komentar yang berkaitan dengan **ID komik** tertentu. Mendukung pagination dengan parameter opsional:
+- **`page`** (opsional): Halaman data yang diinginkan.
+- **`limit`** (opsional): Jumlah data per halaman.
+
+**Contoh Request:**
+
+```json
+GET /comments/get-comment/4
+```
+
+**Respons:**  
+Mengembalikan daftar komentar yang terkait dengan komik tersebut, beserta metadata pagination.
+
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![4-get-comment-by-comic](https://github.com/user-attachments/assets/c9a3220b-48fa-49f3-a778-c4eb971b24fe)
+
+
+---
+
+#### **5. GET /comments/get-comment-episode/8
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk mengambil semua komentar yang berkaitan dengan **ID episode** tertentu. Mendukung pagination dengan parameter opsional:
+- **`page`** (opsional): Halaman data yang diinginkan.
+- **`limit`** (opsional): Jumlah data per halaman.
+
+**Contoh Request:**
+
+```json
+GET /comments/get-comment-episode/8
+```
+
+**Respons:**  
+Mengembalikan daftar komentar yang terkait dengan episode tersebut, beserta metadata pagination.
+
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![5-comment-by-episode](https://github.com/user-attachments/assets/0e40984a-7951-48a7-a6e5-16abff8d5954)
+
+
+---
+
 
 **[⬆ kembali ke atas](#daftar-isi)**
