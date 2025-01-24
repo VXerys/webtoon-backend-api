@@ -485,3 +485,164 @@ File ini berisi metadata proyek, daftar dependensi, dan script untuk menjalankan
 --- 
 
 **[⬆ kembali ke atas](#daftar-isi)**
+
+Berikut adalah penjelasan untuk **Endpoint API** khusus untuk folder `Auth`, dengan format yang rapi dan tambahan teks untuk menampilkan screenshot endpoint:
+
+---
+
+### **Penjelasan Endpoint API**
+
+#### **a. Auth**
+
+Folder `Auth` menangani autentikasi pengguna, termasuk fitur seperti registrasi, login, verifikasi email, dan pengelolaan token. Berikut adalah endpoint yang tersedia di folder ini:
+
+---
+
+#### **1. POST /api/auth/register**
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk mendaftarkan pengguna baru. Data yang dikirimkan harus mencakup:
+- **`username`**: Nama pengguna.
+- **`email`**: Alamat email pengguna.
+- **`password`**: Kata sandi.
+- **`confirmPassword`**: Konfirmasi kata sandi.
+
+**Contoh Request:**
+
+```json
+POST /api/auth/register
+{
+  "username": "JohnDoe",
+  "email": "johndoe@example.com",
+  "password": "securepassword123",
+  "confirmPassword": "securepassword123"
+}
+```
+
+**Respons:**
+- Jika berhasil, akan mengembalikan pesan bahwa registrasi berhasil dan meminta pengguna memverifikasi email mereka.
+- Jika gagal (contoh: email sudah digunakan atau password tidak cocok), akan mengembalikan pesan error.
+
+**Contoh Respons:**
+
+```json
+{
+  "message": "User registered successfully. Check your email for verification."
+}
+```
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![register](https://github.com/user-attachments/assets/593e3c6d-e913-43bd-87a8-1dd902420e71)
+
+
+---
+
+#### **2. POST /api/auth/verify**
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk memverifikasi akun pengguna berdasarkan email dan kode verifikasi. Data yang diperlukan:
+- **`email`**: Alamat email pengguna.
+- **`verificationCode`**: Kode verifikasi yang diterima melalui email.
+
+**Contoh Request:**
+
+```json
+POST /api/auth/verify
+{
+  "email": "johndoe@example.com",
+  "verificationCode": "123456"
+}
+```
+
+**Respons:**
+- Jika berhasil, akan mengembalikan pesan bahwa akun berhasil diverifikasi.
+- Jika gagal (contoh: kode tidak valid atau akun tidak ditemukan), akan mengembalikan pesan error.
+
+**Contoh Respons:**
+
+```json
+{
+  "message": "User verified successfully."
+}
+```
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![Screenshot: Hasil Test POST /api/auth/verify](#)
+
+---
+
+#### **3. POST /api/auth/login**
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk login pengguna. Data yang dikirimkan harus mencakup:
+- **`email`**: Alamat email pengguna.
+- **`password`**: Kata sandi pengguna.
+
+**Contoh Request:**
+
+```json
+POST /api/auth/login
+{
+  "email": "johndoe@example.com",
+  "password": "securepassword123"
+}
+```
+
+**Respons:**
+- Jika berhasil, akan mengembalikan token JWT untuk keperluan autentikasi pengguna.
+- Jika gagal (contoh: email atau password salah), akan mengembalikan pesan error.
+
+**Contoh Respons:**
+
+```json
+{
+  "message": "Login successful.",
+  "token": "eyJhbGciOiJIUzI1NiIsInR..."
+}
+```
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![Screenshot: Hasil Test POST /api/auth/login](#)
+
+---
+
+#### **4. POST /api/auth/forgot-password**
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk meminta reset password jika pengguna lupa kata sandi. Data yang diperlukan:
+- **`email`**: Alamat email pengguna.
+
+**Contoh Request:**
+
+```json
+POST /api/auth/forgot-password
+{
+  "email": "johndoe@example.com"
+}
+```
+
+**Respons:**
+- Jika berhasil, akan mengirimkan email dengan instruksi untuk reset password.
+- Jika gagal (contoh: email tidak terdaftar), akan mengembalikan pesan error.
+
+**Contoh Respons:**
+
+```json
+{
+  "message": "Password reset email sent. Please check your email."
+}
+```
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![Screenshot: Hasil Test POST /api/auth/forgot-password](#)
+
+---
+
+#### **Catatan:**  
+Setiap endpoint di atas memerlukan pengaturan tertentu di database, seperti email pengguna harus unik, password di-hash, dan token disimpan dengan aman.
+
+Dengan format seperti ini, penjelasan menjadi lebih terstruktur, setiap endpoint dijelaskan dengan rinci, dan ada placeholder untuk menampilkan screenshot dari Postman. Jika ada tambahan atau perubahan, beri tahu saya!
