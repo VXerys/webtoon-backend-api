@@ -20,9 +20,6 @@
    </details>
 - [Penjelasan Endpoint API](#penjelasan-endpoint-api)  
 - [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)  
-- [Autentikasi dan Autorisasi](#autentikasi-dan-autorisasi)  
-- [Error Handling](#error-handling)  
-- [Testing](#testing)  
 - [Kesimpulan](#kesimpulan)
 
 ---
@@ -1446,7 +1443,7 @@ module.exports = router;
 
 ---
 
-### Import Library dan Modul
+### **9. Import Library dan Modul **
 ```javascript
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
@@ -1462,7 +1459,7 @@ const { sendVerificationEmail, generateVerificationCode, sendResetPasswordEmail,
 
 ---
 
-### Fungsi `registerUser`
+### **10. Fungsi `registerUser`**
 ```javascript
 const registerUser = async (req, res) => { ... }
 ```
@@ -1492,7 +1489,7 @@ Fungsi ini bertanggung jawab untuk mendaftarkan pengguna baru.
 
 ---
 
-### Fungsi `verifyUser`
+### **11. Fungsi `verifyUser`**
 ```javascript
 const verifyUser = async (req, res) => { ... }
 ```
@@ -1512,7 +1509,7 @@ Memverifikasi akun pengguna dengan kode yang dikirim melalui email.
 
 ---
 
-### Fungsi `loginUser`
+### **12. Fungsi `loginUser`**
 ```javascript
 const loginUser = async (req, res) => { ... }
 ```
@@ -1536,7 +1533,7 @@ Fungsi ini digunakan untuk autentikasi pengguna yang telah terdaftar.
 
 ---
 
-### Fungsi `resetPassword`
+### **13. Fungsi `resetPassword`**
 ```javascript
 const resetPassword = async (req, res) => { ... }
 ```
@@ -1560,7 +1557,7 @@ Mengatur ulang password pengguna menggunakan token reset.
 
 ---
 
-### Fungsi `requestResetPassword`
+### **14. Fungsi `requestResetPassword`**
 ```javascript
 const requestResetPassword = async (req, res) => { ... }
 ```
@@ -1584,7 +1581,7 @@ Mengirim permintaan untuk reset password dengan mengirimkan email berisi token r
 
 ---
 
-### Modul Ekspor
+### **15. Modul Ekspor**
 ```javascript
 module.exports = {
   registerUser,
@@ -1594,6 +1591,7 @@ module.exports = {
   requestResetPassword,
 };
 ```
-Semua fungsi yang dibuat diekspor agar dapat digunakan di `authRoutes.js`.
+
+**[⬆ kembali ke atas](#daftar-isi)**
 
 --- 
