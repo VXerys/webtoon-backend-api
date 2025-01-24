@@ -1442,3 +1442,158 @@ module.exports = router;
 
 
 **[⬆ kembali ke atas](#daftar-isi)**
+
+
+---
+
+### Import Library dan Modul
+```javascript
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+const db = require('../db/connection');
+const { sendVerificationEmail, generateVerificationCode, sendResetPasswordEmail, generateResetToken } = require('../services/emailService');
+```
+- **`bcrypt`**: Digunakan untuk mengenkripsi dan memverifikasi password pengguna.
+- **`crypto`**: Untuk menghasilkan token atau kode secara acak (dalam layanan email).
+- **`jsonwebtoken`**: Untuk membuat dan memverifikasi token JWT, yang digunakan untuk autentikasi.
+- **`db`**: Mengimport koneksi database dari file `connection.js`.
+- **Layanan email**: Menggunakan fungsi dari modul `emailService` untuk mengirim email verifikasi atau reset password.
+
+---
+
+### Fungsi `registerUser`
+```javascript
+const registerUser = async (req, res) => { ... }
+```
+#### Deskripsi:
+Fungsi ini bertanggung jawab untuk mendaftarkan pengguna baru.
+
+#### Penjelasan Langkah:
+1. **Ambil data dari `req.body`**:
+   ```javascript
+   const { username, email, password, confirmPassword } = req.body;
+   ```
+2. **Validasi password**:
+   - Jika `password` tidak sama dengan `confirmPassword`, balas dengan error.
+3. **Cek apakah email sudah ada di database**:
+   ```javascript
+   const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+   ```
+   - Jika email sudah ada:
+     - Jika akun belum diverifikasi, kirim ulang kode verifikasi.
+     - Jika akun sudah diverifikasi, kirim pesan error.
+4. **Jika email belum ada**:
+   - Hasilkan kode verifikasi dengan `generateVerificationCode`.
+   - Hash password menggunakan `bcrypt`.
+   - Simpan data pengguna baru ke database dan kirim email verifikasi.
+5. **Respon sukses**: 
+   Mengirim pesan bahwa pengguna berhasil didaftarkan.
+
+---
+
+### Fungsi `verifyUser`
+```javascript
+const verifyUser = async (req, res) => { ... }
+```
+#### Deskripsi:
+Memverifikasi akun pengguna dengan kode yang dikirim melalui email.
+
+#### Penjelasan Langkah:
+1. **Ambil `email` dan `verificationCode` dari `req.body`**.
+2. **Cari pengguna berdasarkan email**:
+   - Jika tidak ditemukan, balas dengan error.
+3. **Cek validitas kode verifikasi**:
+   - Jika kode tidak cocok, balas dengan error.
+4. **Perbarui status pengguna di database**:
+   - Set `is_verified` menjadi `true` dan hapus kode verifikasi.
+5. **Respon sukses**:
+   Mengirim pesan bahwa verifikasi berhasil.
+
+---
+
+### Fungsi `loginUser`
+```javascript
+const loginUser = async (req, res) => { ... }
+```
+#### Deskripsi:
+Fungsi ini digunakan untuk autentikasi pengguna yang telah terdaftar.
+
+#### Penjelasan Langkah:
+1. **Validasi input**:
+   - Pastikan `email` dan `password` ada.
+2. **Cari pengguna berdasarkan email**:
+   - Jika tidak ditemukan, balas dengan error.
+3. **Cek status akun**:
+   - Jika akun belum diverifikasi, kirim error.
+4. **Validasi password**:
+   - Gunakan `bcrypt.compare` untuk membandingkan password input dengan password di database.
+   - Jika password salah, kirim error.
+5. **Buat JWT**:
+   - Token berisi `userId` dan `role`, dengan durasi 2 jam.
+6. **Respon sukses**:
+   Kirim token JWT ke klien.
+
+---
+
+### Fungsi `resetPassword`
+```javascript
+const resetPassword = async (req, res) => { ... }
+```
+#### Deskripsi:
+Mengatur ulang password pengguna menggunakan token reset.
+
+#### Penjelasan Langkah:
+1. **Ambil data dari `req.body`**.
+2. **Validasi input**:
+   - Pastikan semua data (email, password baru, konfirmasi password, token reset) tersedia.
+   - Jika `newPassword` tidak cocok dengan `confirmPassword`, kirim error.
+3. **Cari pengguna berdasarkan email**:
+   - Jika tidak ditemukan, kirim error.
+4. **Validasi token reset**:
+   - Jika token tidak valid atau tidak sesuai, kirim error.
+5. **Perbarui password**:
+   - Hash password baru dan simpan ke database.
+   - Hapus token reset dari database.
+6. **Respon sukses**:
+   Kirim pesan bahwa password berhasil diubah.
+
+---
+
+### Fungsi `requestResetPassword`
+```javascript
+const requestResetPassword = async (req, res) => { ... }
+```
+#### Deskripsi:
+Mengirim permintaan untuk reset password dengan mengirimkan email berisi token reset.
+
+#### Penjelasan Langkah:
+1. **Ambil `email` dari `req.body`**.
+2. **Cari pengguna berdasarkan email**:
+   - Jika tidak ditemukan, kirim error.
+3. **Validasi status akun**:
+   - Jika akun belum diverifikasi, kirim error.
+4. **Hasilkan token reset**:
+   Gunakan fungsi `generateResetToken` untuk membuat token.
+5. **Perbarui database**:
+   - Simpan token reset di database.
+6. **Kirim email reset password**:
+   Gunakan fungsi `sendResetPasswordEmail`.
+7. **Respon sukses**:
+   Kirim pesan bahwa permintaan reset password berhasil.
+
+---
+
+### Modul Ekspor
+```javascript
+module.exports = {
+  registerUser,
+  verifyUser,
+  loginUser,
+  resetPassword,
+  requestResetPassword,
+};
+```
+Semua fungsi yang dibuat diekspor agar dapat digunakan di `authRoutes.js`.
+
+--- 
