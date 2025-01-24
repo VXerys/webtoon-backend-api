@@ -1108,4 +1108,336 @@ Mengembalikan daftar komentar yang terkait dengan episode tersebut, beserta meta
 ---
 
 
+## **Kode Utama dan Fungsionalitas**
+
+### **1. server.js**
+File `server.js` merupakan entry point dari aplikasi backend. File ini bertanggung jawab untuk mengatur server Express, middleware, dan routing ke berbagai fitur aplikasi. Berikut adalah penjelasan fungsi utama dalam file ini:
+
+#### **Fungsi Utama:**
+1. **Konfigurasi Environment:**  
+   Menggunakan modul `dotenv` untuk membaca variabel lingkungan (`.env`) seperti port aplikasi.
+
+2. **Middleware Body Parser:**  
+   Menggunakan `body-parser` untuk mem-parsing payload JSON pada setiap request agar mudah diakses melalui `req.body`.
+
+3. **Routing:**  
+   File ini mengatur rute untuk berbagai endpoint:
+   - **`/auth`**: Rute yang mengarah ke fitur autentikasi.
+   - **`/comics`**: Rute untuk fitur manajemen komik.
+   - **`/comments`**: Rute untuk fitur komentar.
+   - **`/episodes`**: Rute untuk fitur episode.
+
+4. **Server Initialization:**  
+   Aplikasi dijalankan pada port yang ditentukan oleh variabel `PORT`, dengan nilai default 3000 jika `PORT` tidak tersedia.
+
+#### **Kode:**
+```javascript
+require('dotenv').config();
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+
+app.use(bodyParser.json());
+
+app.use('/auth', require('./routes/authRoutes'));
+app.use('/comics', require('./routes/comicsRoutes'));
+app.use('/comments', require('./routes/commentsRoutes'));
+app.use('/episodes', require('./routes/episodeRoutes'));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});
+```
+
+---
+
+### **2. jwtMiddlewares.js**
+File `jwtMiddlewares.js` berisi middleware untuk autentikasi dan otorisasi berbasis JWT (JSON Web Token). File ini bertanggung jawab memastikan request yang masuk memiliki token valid dan memverifikasi apakah pengguna memiliki izin untuk mengakses resource tertentu.
+
+#### **Fungsi Utama:**
+1. **`verifyTokenJWT`**  
+   - Mengecek apakah request memiliki header otorisasi dengan token JWT.  
+   - Memverifikasi token menggunakan kunci rahasia (`process.env.JWT_SECRET`).  
+   - Jika token valid, informasi pengguna (ID dan role) ditambahkan ke objek `req.user`.
+
+2. **`checkRole`**  
+   - Middleware untuk membatasi akses berdasarkan peran pengguna.
+   - Mengambil parameter `requiredRoles` (array peran) dan mengecek apakah peran pengguna sesuai dengan yang diperlukan.
+
+#### **Kode:**
+```javascript
+const jwt = require('jsonwebtoken');
+
+const verifyTokenJWT = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Unauthorized: No token provided' });
+  }
+
+  const token = authHeader.split(' ')[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = { id: decoded.userId, role: decoded.role };
+    next();
+  } catch (error) {
+    console.error('JWT verification failed:', error.message);
+    return res.status(403).json({ message: 'Forbidden: Invalid token' });
+  }
+};
+
+const checkRole = (requiredRoles) => {
+  return (req, res, next) => {
+    if (!req.user || !requiredRoles.includes(req.user.role)) {
+      return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
+    }
+    next();
+  };
+};
+
+module.exports = {
+  verifyTokenJWT,
+  checkRole
+};
+```
+
+---
+
+### **3. emailServices.js**
+File `emailServices.js` digunakan untuk menangani pengiriman email, seperti email verifikasi dan reset password. File ini menggunakan modul `nodemailer` untuk mengirim email melalui server SMTP.
+
+#### **Fungsi Utama:**
+1. **`generateVerificationCode` & `generateResetToken`:**  
+   - Membuat kode unik untuk verifikasi email dan reset password.  
+   - Kode dihasilkan secara acak dan bersifat sementara.
+
+2. **`transporter`:**  
+   - Konfigurasi transport SMTP menggunakan `nodemailer` dengan kredensial email yang disimpan di `.env`.
+
+3. **`sendEmail`:**  
+   - Fungsi generik untuk mengirim email berdasarkan parameter `to`, `subject`, dan `html`.
+
+4. **`sendVerificationEmail`:**  
+   - Mengirim email berisi kode verifikasi untuk mendaftarkan akun baru.
+
+5. **`sendResetPasswordEmail`:**  
+   - Mengirim email berisi kode reset password jika pengguna meminta reset password.
+
+#### **Kode:**
+```javascript
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+require('dotenv').config();
+
+const generateVerificationCode = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+const generateResetToken = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 465, 
+  secure: true,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  socketTimeout: 20000,
+});
+
+const sendEmail = async ({ to, subject, html }) => {
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to,
+      subject,
+      html,
+    });
+    console.log(`${subject} email sent successfully to ${to}`);
+  } catch (error) {
+    console.error(`Error sending ${subject} email:`, error);
+    throw new Error(`Failed to send ${subject} email`);
+  }
+};
+
+const sendVerificationEmail = async (to, verificationCode) => {
+  const html = `
+    <p>Thank you for registering!</p>
+    <p>Your verification code is: <strong>${verificationCode}</strong></p>
+    <p>Please use this code to verify your email. The code will expire in 1 hour.</p>
+  `;
+  await sendEmail({ to, subject: 'Email Verification', html });
+};
+
+const sendResetPasswordEmail = async (to, resetToken) => {
+  const html = `
+    <p>Your reset password code is: <strong>${resetToken}</strong></p>
+    <p>The code will expire in 1 hour.</p>
+  `;
+  await sendEmail({ to, subject: 'Reset Password', html });
+};
+
+module.exports = {
+  sendResetPasswordEmail,
+  sendVerificationEmail,
+  sendEmail,
+  generateVerificationCode,
+  generateResetToken
+};
+```
+
+---
+
+
+### **4. connection.js (Database Connection)**
+
+```javascript
+const mysql = require('mysql2/promise');
+
+const db = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'db_webtoon'
+});
+
+db.getConnection()
+    .then((connection) => {
+        console.log('Database Connected');
+        connection.release();
+    })
+    .catch((err) => {
+        console.error('Database connection failed:', err.message);
+    });
+
+module.exports = db;
+```
+
+**Perubahan dan peningkatan:**
+1. Menggunakan `Promise` chaining untuk menangani koneksi database.
+2. Menghapus callback `getConnection` yang sebenarnya redundant dengan penggunaan `mysql2/promise`.
+
+---
+
+### **5. authRoutes.js**
+
+```javascript
+const express = require('express');
+const { registerUser, verifyUser, loginUser, resetPassword, requestResetPassword } = require('../controllers/authController');
+const { verifyTokenJWT, checkRole } = require('../middlewares/jwtMiddlewares');
+
+const router = express.Router();
+
+// Public routes
+router.post('/register', registerUser);
+router.post('/verify', verifyUser);
+router.post('/login', loginUser);
+router.post('/request-reset-password', requestResetPassword);
+router.post('/reset-password', resetPassword);
+
+// Protected routes with role-based access (example)
+// router.get('/profile', verifyTokenJWT, (req, res) => {
+//     res.json({ message: `Welcome, User ID: ${req.user.id}` });
+// });
+
+// router.get('/admin', verifyTokenJWT, checkRole(['admin']), (req, res) => {
+//     res.json({ message: 'Welcome Admin!' });
+// });
+
+module.exports = router;
+```
+
+**Perubahan dan peningkatan:**
+1. Membersihkan komentar yang tidak diperlukan, tetapi menyimpan contoh untuk role-based access.
+2. Menambahkan komentar untuk membedakan antara public dan protected routes.
+
+---
+
+### **6. comicsRoutes.js**
+
+```javascript
+const express = require('express');
+const { createComic, getComicById, getAllComics, editComic, deleteComic } = require('../controllers/comicsController');
+const { verifyTokenJWT } = require('../middlewares/jwtMiddlewares');
+
+const router = express.Router();
+
+// Public routes
+router.get('/', getAllComics);
+router.get('/:id', getComicById);
+
+// Protected routes
+router.post('/create', verifyTokenJWT, createComic);
+router.put('/edit/:id', verifyTokenJWT, editComic);
+router.delete('/delete/:id', verifyTokenJWT, deleteComic);
+
+module.exports = router;
+```
+
+**Perubahan dan peningkatan:**
+1. Menambahkan kategori komentar untuk public dan protected routes.
+2. Membuat struktur lebih mudah dipahami.
+
+---
+
+### **7. commentsRoutes.js**
+
+```javascript
+const express = require('express');
+const { createComment, getCommentsByComicId, editComment, deleteComment, getCommentsByEpisodeId } = require('../controllers/commentsController');
+const { verifyTokenJWT } = require('../middlewares/jwtMiddlewares');
+
+const router = express.Router();
+
+// Public routes
+router.get('/get-comments/:comic_id', getCommentsByComicId);
+router.get('/get-comments-episode/:episode_id', getCommentsByEpisodeId);
+
+// Protected routes
+router.post('/create-comment', verifyTokenJWT, createComment);
+router.put('/edit-comment/:id', verifyTokenJWT, editComment);
+router.delete('/delete-comment/:id', verifyTokenJWT, deleteComment);
+
+module.exports = router;
+```
+
+**Perubahan dan peningkatan:**
+1. Sama seperti di atas, membedakan public dan protected routes.
+2. Memastikan struktur tetap sederhana dan mudah diikuti.
+
+---
+
+### **8. episodeRoutes.js**
+
+```javascript
+const express = require('express');
+const { createEpisode, getEpisodeByComicId, editEpisode, deleteEpisode, getEpisodeDetails } = require('../controllers/episodesController');
+const { verifyTokenJWT } = require('../middlewares/jwtMiddlewares');
+
+const router = express.Router();
+
+// Public routes
+router.get('/:comic_id', getEpisodeByComicId);
+router.get('/details/:id', getEpisodeDetails);
+
+// Protected routes
+router.post('/create', verifyTokenJWT, createEpisode);
+router.put('/edit/:id', verifyTokenJWT, editEpisode);
+router.delete('/delete/:id', verifyTokenJWT, deleteEpisode);
+
+module.exports = router;
+```
+
+**Perubahan dan peningkatan:**
+1. Menambahkan kategori public dan protected routes.
+2. Membersihkan struktur supaya lebih konsisten dengan file routes lainnya.
+
+---
+
+
 **[⬆ kembali ke atas](#daftar-isi)**
