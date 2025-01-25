@@ -24,7 +24,7 @@
   - 📖 [Komik](#comics)
   - 🎬 [Episode](#episode)  
   - 💬 [Komentar](#comments)  
-- 💻 [Kode Utama](#kode-utama-dan-fungsionalitas)
+- 💻 [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)
   - 🖥️ [Server](#server-file) 
   - 🛡️ [Middleware](#middlewares-folder)  
   - 📧 [Services](#services-folder)  
