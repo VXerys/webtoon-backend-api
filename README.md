@@ -14,7 +14,7 @@
 
 ---
 
-## 🗂️ **Daftar Isi**
+## **Daftar Isi**
 
 - 🌟 [Pendahuluan](#pendahuluan)   
 - 🗃️ [Database](#database)   
