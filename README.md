@@ -2176,9 +2176,7 @@ module.exports = {
    ```javascript
    console.error('Error creating episode:', error);
    ```
-
-   **[⬆ Kembali ke Daftar Isi](#daftar-isi)**
-
+   
 ### 🏁 **Kesimpulan**
 
 #### 🌟 **Pencapaian Proyek**  
