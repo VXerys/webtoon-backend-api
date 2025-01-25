@@ -47,7 +47,8 @@
 
 ### 🎯 **Deskripsi Proyek**  
 **Webtoon Backend API** adalah solusi backend khusus untuk platform komik digital yang menyediakan:  
-✨ **Manajemen Konten**: CRUD komik & episode  
+✨ **Manajemen Konten**: CRUD komik & episode dengan optimasi media  
+✨ **Penyimpanan Cloud**: Manajemen gambar cover via Cloudinary  
 ✨ **Sistem Pengguna**: Registrasi, login, verifikasi email  
 ✨ **Interaksi**: Komentar & rating (opsional)  
 ✨ **Keamanan**: JWT Token & role-based access  
@@ -59,38 +60,42 @@ Dibangun untuk mendukung aplikasi frontend (web/mobile) dengan arsitektur RESTfu
 ### 🚀 **Tujuan Proyek**  
 | Ikon | Tujuan |  
 |------|--------|  
+| 🖼️ | Optimasi penyimpanan gambar dengan Cloudinary |  
 | 🔑 | Autentikasi pengguna dengan JWT Token |  
-| 📈 | Optimasi query database untuk performa tinggi |  
-| 🛡️ | Proteksi endpoint dengan RBAC (Role-Based Access Control) |  
-| 🔄 | Standardisasi response API untuk integrasi mudah |  
+| 🚀 | Response API <500ms untuk operasi CRUD |  
+| 🛡️ | Proteksi endpoint dengan RBAC |  
 
 ---
 
 ### ⚙️ **Teknologi Inti**  
-| Komponen       | Teknologi               | Ikon |  
-|----------------|-------------------------|------|  
-| **Backend**    | Node.js + Express       | 🟢 |  
-| **Database**   | MySQL                   | 🐬 |  
-| **Auth**       | JWT + Bcrypt            | 🔐 |  
-| **Testing**    | Postman                 | 📡 |  
+| Komponen          | Teknologi               | Ikon |  
+|-------------------|-------------------------|------|  
+| **Backend**       | Node.js + Express       | 🟢 |  
+| **Database**      | MySQL                   | 🐬 |  
+| **Auth**          | JWT + Bcrypt            | 🔐 |  
+| **Media Cloud**   | Cloudinary              | ☁️ |  
+| **Testing**       | Postman                 | 📡 |  
 
 ---
 
 ### 🎨 **Fitur Unggulan**  
-- 🧩 **Modular Codebase**: Struktur folder terorganisir  
-- 📊 **Relational Database**: Diagram ER terintegrasi  
-- 🔍 **Advanced Search**: Filter komik/genre  
-- 📅 **Automated Services**: Email verifikasi & reset password  
-- 📝 **Logging System**: Error tracking terpusat  
+- 🖼️ **Cloud Image Optimization**  
+  - Auto-convert gambar ke WebP  
+  - Kompresi lossless dengan kualitas terjaga  
+  - CDN global untuk delivery cepat  
+  
+- 🧩 **Modular Codebase**  
+- 📊 **Relational Database**  
+- 🔍 **Advanced Search**  
+- 📅 **Automated Services**  
 
 ---
 
 ### 🌍 **Penerapan**  
 **API ini cocok untuk**:  
-- Startup digital komik  
-- Platform self-publishing creator  
-- Sistem manajemen konten publisher  
-- Integrasi dengan aplikasi mobile/web  
+- Platform komik dengan kebutuhan unggah gambar intensif  
+- Startup yang ingin fokus ke core business tanpa mengelola infrastruktur media  
+- Sistem yang membutuhkan delivery gambar berperforma tinggi  
 
 ---
 
@@ -125,10 +130,6 @@ Database yang digunakan untuk proyek ini dirancang untuk mendukung fitur dan fun
        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
    );
-
-   -- Menambahkan pengguna baru
-   INSERT INTO users (username, email, password, verification_code)
-   VALUES ('JohnDoe', 'john@example.com', 'hashed_password', '12345');
    ```
 
 2. **Tabel `comics`**  
@@ -150,15 +151,12 @@ Database yang digunakan untuk proyek ini dirancang untuk mendukung fitur dan fun
        description TEXT,
        creator_id INT NOT NULL,
        cover_image_url VARCHAR(255),
+       cloudinary_public_id VARCHAR(255),
        status ENUM('ongoing', 'completed') DEFAULT 'ongoing',
        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
        FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE
    );
-
-   -- Menambahkan komik baru
-   INSERT INTO comics (title, genre, description, creator_id, cover_image_url, status)
-   VALUES ('Lookism', 'Action, School', 'A story about appearances.', 4, 'https://lookism.com/cover.jpg', 'ongoing');
    ```
 
 3. **Tabel `episodes`**  
@@ -181,10 +179,6 @@ Database yang digunakan untuk proyek ini dirancang untuk mendukung fitur dan fun
        upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
        FOREIGN KEY (comic_id) REFERENCES comics(id) ON DELETE CASCADE
    );
-
-   -- Menambahkan episode baru
-   INSERT INTO episodes (comic_id, episode_number, title, content_url)
-   VALUES (1, 1, 'The Beginning', 'https://example.com/episode-1');
    ```
 
 ### **Relasi Antar Tabel**
@@ -271,18 +265,19 @@ root/
 │   └── userRoutes.js
 │
 ├── middleware/
-│   └── jwtMiddleware.js
+│   ├── jwtMiddleware.js
+│   └── uploadMiddleware.js
 │
 ├── services/
 │   ├── emailService.js
-│   └── notificationService.js
+│   └── cloudinary.js
 │
 ├── db/
 │   └──connections.js
 │
 ├── utils/
-│   ├── response.js
-│   └── jwtHelper.js
+│   └──response.js
+│    
 │
 ├── .env
 ├── server.js
@@ -495,36 +490,97 @@ Folder `Comics` digunakan untuk mengelola data komik, mulai dari membuat, membac
 
 ---
 
-##### **1. POST /comics/create**
+Berikut revisi dokumentasi endpoint `POST /comics/create` yang terintegrasi dengan Cloudinary:
 
-**Deskripsi:**  
-Endpoint ini digunakan untuk membuat komik baru. Data yang diperlukan adalah:
-- **`title`**: Judul komik.
-- **`description`**: Deskripsi singkat komik.
-- **`author`**: Nama penulis komik.
-- **`genres`**: Genre komik (array string).
-- **`coverImage`**: URL atau path gambar sampul komik.
+---
 
-**Contoh Request:**
+##### **1. POST /comics/create**  
+**Membuat Komik Baru dengan Upload Cover ke Cloudinary**
 
+###### 🔑 **Headers**
+```http
+Content-Type: multipart/form-data
+Authorization: Bearer <JWT_TOKEN>
+```
+
+###### 📦 **Request Body (form-data)**
+| Key             | Type      | Required | Description                          |
+|-----------------|-----------|----------|--------------------------------------|
+| `title`         | Text      | Yes      | Judul komik (3-255 karakter)         |
+| `description`   | Text      | No       | Deskripsi komik (maks 500 karakter)  |
+| `creator_id`    | Text      | Yes      | ID pembuat komik (numerik)           |
+| `genre`         | Text      | No       | Genre komik (contoh: "Fantasy,Action") |
+| `status`        | Text      | No       | Status komik (default: "ongoing")    |
+| `cover_image`   | File      | Yes      | File gambar cover (JPEG/PNG/WEBP)    |
+
+###### ✅ **Response Sukses (201 Created)**
 ```json
-POST /comics/create
 {
-  "title": "Amazing Comic",
-  "description": "An incredible journey of a hero.",
-  "author": "John Doe",
-  "genres": ["Adventure", "Fantasy"],
-  "coverImage": "https://example.com/comic-cover.jpg"
+  "message": "Comic created successfully",
+  "data": {
+    "id": 5,
+    "title": "Amazing Comic",
+    "cover_url": "https://res.cloudinary.com/.../webtoon/covers/xyz.webp",
+    "cloudinary_public_id": "webtoon/covers/xyz"
+  }
 }
 ```
 
-**Respons:**  
-Jika berhasil, akan mengembalikan data komik yang baru dibuat.
+###### 🚨 **Error Scenarios**
+1. **Validasi Gagal (400 Bad Request)**  
+```json
+{
+  "message": "Title and creator_id are required"
+}
+```
 
+2. **File Tidak Valid (400 Bad Request)**  
+```json
+{
+  "message": "Only image files are allowed (JPEG/PNG/WEBP)"
+}
+```
+
+3. **Ukuran File Melebihi Batas (400 Bad Request)**  
+```json
+{
+  "message": "File size exceeds 10MB limit"
+}
+```
+
+---
+
+##### 📸 **Contoh Penggunaan di Postman**
+1. Pilih **Body** → **form-data**
+2. Isi field berikut:  
+   ```ini
+   Key: title          Value: Amazing Comic
+   Key: creator_id     Value: 11
+   Key: genre          Value: Fantasy,Action
+   Key: cover_image    Value: [Pilih file cover.jpg]
+   ```
+
+---
+
+##### 🔧 **Catatan Teknis**
+1. **Optimasi Gambar**  
+   - Gambar otomatis dikonversi ke format WebP  
+   - Kompresi kualitas otomatis (`quality: "auto:good"`)
+
+2. **Keamanan**  
+   - File temporary otomatis dihapus setelah upload  
+   - Gambar disimpan di folder terisolasi: `webtoon/covers`
+
+3. **Validasi Backend**  
+   ```javascript
+   if (!req.file) {
+     return res.status(400).json({ message: "Cover image is required" });
+   }
+   ```
 
 **Screenshot:**  
 *Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
-> ![1-create-comics](https://github.com/user-attachments/assets/de6cda87-010f-4a84-a20a-2a72ab6cdd3c)
+> ![image](https://github.com/user-attachments/assets/21ec43a3-a5c7-4d2e-a2f2-d800c6058706)
 
 
 ---
@@ -554,25 +610,95 @@ Mengembalikan daftar komik beserta metadata pagination.
 
 ---
 
-##### **3. PUT /comics/edit/4**
+Berikut revisi dokumentasi endpoint `PUT /comics/edit/:id` yang terintegrasi dengan Cloudinary:
 
-**Deskripsi:**  
-Endpoint ini digunakan untuk mengedit data komik berdasarkan ID. Data yang dapat diubah adalah:
-- **`title`**
-- **`description`**
-- **`author`**
-- **`genres`**
-- **`coverImage`**
+---
 
-**Contoh Request:**
+##### **3. PUT /comics/edit/:id**  
+**Memperbarui Data Komik dengan Opsi Update Cover**
 
-**Respons:**  
-Jika berhasil, data komik yang telah diperbarui akan dikembalikan.
+###### 🔑 **Headers**
+```http
+Content-Type: multipart/form-data
+Authorization: Bearer <JWT_TOKEN>
+```
 
+#### 📦 **Request Body (form-data)**
+| Key             | Type      | Required | Description                          |
+|-----------------|-----------|----------|--------------------------------------|
+| `title`         | Text      | Yes      | Judul baru komik                     |
+| `creator_id`    | Text      | Yes      | ID pembuat komik (harus valid)       |
+| `genre`         | Text      | No       | Genre baru (contoh: "Fantasy,Action")|
+| `description`   | Text      | No       | Deskripsi baru                       |
+| `status`        | Text      | No       | Status baru (ongoing/completed)      |
+| `cover_image`   | File      | No       | File gambar cover baru (opsional)    |
+
+###### ✅ **Response Sukses (200 OK)**
+```json
+{
+  "message": "Comic updated successfully",
+  "data": {
+    "id": 4,
+    "new_cover_url": "https://res.cloudinary.com/.../new_cover.webp",
+    "affected_fields": ["title", "cover_image"]
+  }
+}
+```
+
+###### 🚨 **Error Scenarios**
+1. **Validasi Gagal (400 Bad Request)**  
+```json
+{
+  "message": "Title and creator_id are required"
+}
+```
+
+2. **ID Komik Tidak Valid (404 Not Found)**  
+```json
+{
+  "message": "Comic not found"
+}
+```
+
+3. **Gagal Update Gambar (500 Internal Error)**  
+```json
+{
+  "message": "Failed to process image update"
+}
+```
+
+---
+
+##### 📸 **Contoh Penggunaan di Postman**
+1. Pilih **PUT** method dan URL: `http://localhost:3000/comics/edit/4`  
+2. Konfigurasi **Headers**:  
+3. Isi **Body** → **form-data**:  
+   ```ini
+   Key: title          Value: Solo Leveling Reborn
+   Key: creator_id     Value: 11
+   Key: cover_image    Value: [Pilih file new_cover.jpg]
+   ```
+
+---
+
+##### 🔧 **Mekanisme Update Cover**
+1. **Jika upload gambar baru**:  
+   - Gambar lama dihapus dari Cloudinary  
+   - Metadata diupdate:  
+     ```sql
+     UPDATE comics SET 
+       cover_image_url = 'new_url',
+       cloudinary_public_id = 'new_public_id' 
+     WHERE id = 4
+     ```
+2. **Tanpa upload gambar**:  
+   - Kolom cover tetap menggunakan nilai sebelumnya  
+
+---
 
 **Screenshot:**  
 *Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
-> ![3-editComic](https://github.com/user-attachments/assets/2d2520c5-3900-4886-a147-e78f6090d549)
+> ![image](https://github.com/user-attachments/assets/37274561-95ee-4de3-8749-cdcb3164878b)
 
 
 ---
@@ -607,16 +733,15 @@ Endpoint ini digunakan untuk menghapus data komik berdasarkan ID.
 **Contoh Request:**
 
 ```json
-DELETE /api/comics/1
+DELETE /comics/delete/5
 ```
 
 **Respons:**  
 Jika berhasil, akan mengembalikan pesan konfirmasi penghapusan.
 
-
 **Screenshot:**  
 *Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
-> ![5-deleteComic](https://github.com/user-attachments/assets/f1644de2-6203-4e85-ae4f-7b7148c4178b)
+> ![image](https://github.com/user-attachments/assets/2d4396f6-cb01-4f47-be19-4f9abb1035d0)
 
 
 ---
@@ -624,7 +749,6 @@ Jika berhasil, akan mengembalikan pesan konfirmasi penghapusan.
 **[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
-
 
 #### **Episode**
 
@@ -1115,6 +1239,123 @@ module.exports = {
   generateResetToken
 };
 ```
+
+---
+
+#### 📁 **Cloudinary**  
+*Konfigurasi Cloudinary untuk Manajemen Media*
+
+```javascript
+const cloudinary = require('cloudinary').v2;
+
+/**
+ * Konfigurasi utama Cloudinary
+ * @module CloudinaryConfig
+ */
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true
+});
+
+module.exports = cloudinary;
+```
+
+---
+
+##### 🔧 **Konfigurasi Parameter**
+| Parameter           | Nilai                   | Deskripsi                                  |
+|---------------------|-------------------------|--------------------------------------------|
+| `cloud_name`        | `process.env.CLOUDINARY_CLOUD_NAME`  | Nama cloud akun Cloudinary                 |
+| `api_key`           | `process.env.CLOUDINARY_API_KEY`     | API Key untuk autentikasi                  |
+| `api_secret`        | `process.env.CLOUDINARY_API_SECRET`  | API Secret untuk autentikasi               |
+| `secure`            | `true`                  | Enforce HTTPS untuk semua request          |
+
+---
+
+##### 🌐 **Environment Variables**
+Tambahkan di `.env`:
+```ini
+# Cloudinary Credentials
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key_123
+CLOUDINARY_API_SECRET=your_api_secret_abc
+```
+
+---
+
+##### 💻 **Contoh Penggunaan**
+```javascript
+// Di controller
+const cloudinary = require('../config/cloudinary');
+
+// Upload gambar
+const uploadImage = async (filePath) => {
+  return await cloudinary.uploader.upload(filePath, {
+    folder: 'webtoon/covers',
+    format: 'webp'
+  });
+};
+```
+
+---
+
+##### 🔒 **Best Practices**
+1. **Proteksi Credential**
+   - Jangan hardcode credential di kode
+   - Gunakan environment variables
+   - Batasi akses API key di dashboard Cloudinary
+
+2. **Optimasi Upload**
+   ```javascript
+   cloudinary.uploader.upload(filePath, {
+     quality_analysis: true,
+     responsive_breakpoints: {
+       create_derived: true,
+       bytes_step: 20000,
+       min_width: 200,
+       max_width: 1000
+     }
+   });
+   ```
+
+3. **Error Handling**
+   ```javascript
+   try {
+     await cloudinary.uploader.upload(...);
+   } catch (error) {
+     console.error('Cloudinary Error:', error.error.message);
+   }
+   ```
+
+---
+
+##### ⚠️ **Security Considerations**
+1. **API Key Rotation**  
+   Rotasi API key secara berkala melalui dashboard Cloudinary
+
+2. **Signed Uploads**  
+   Untuk operasi sensitif, gunakan signed upload:
+   ```javascript
+   cloudinary.uploader.upload(filePath, {
+     upload_preset: 'webtoon_preset',
+     timestamp: Math.round(new Date().getTime()/1000),
+     signature: generateSignature() // Implement signing logic
+   });
+   ```
+
+3. **Access Restriction**  
+   - Batasi IP yang bisa akses API
+   - Enable Two-Factor Authentication di akun Cloudinary
+
+---
+
+🔗 **Referensi Resmi**:  
+[Cloudinary Node.js SDK Documentation](https://cloudinary.com/documentation/node_integration)  
+[Cloudinary Security Guide](https://cloudinary.com/documentation/security)
+
+---
 
 **[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
