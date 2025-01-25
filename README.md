@@ -94,7 +94,7 @@ Dibangun untuk mendukung aplikasi frontend (web/mobile) dengan arsitektur RESTfu
 
 ---
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
 
@@ -247,7 +247,7 @@ VALUES (1, 4, 'Amazing episode! Can’t wait for the next one.');
 
 ---
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
 
@@ -291,7 +291,7 @@ root/
 
 ---
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 --- 
 
@@ -487,7 +487,7 @@ Jika berhasil, sistem akan memperbarui kata sandi pengguna di database.
 
 ---
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 #### **Comics**
 
@@ -621,7 +621,7 @@ Jika berhasil, akan mengembalikan pesan konfirmasi penghapusan.
 
 ---
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
 
@@ -768,7 +768,7 @@ Jika berhasil, akan mengembalikan pesan konfirmasi penghapusan.
 
 ---
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
 
@@ -919,7 +919,7 @@ Mengembalikan daftar komentar yang terkait dengan episode tersebut, beserta meta
 
 ---
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
 
@@ -967,7 +967,7 @@ app.listen(PORT, () => {
 
 ---
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
 
@@ -1025,7 +1025,7 @@ module.exports = {
 ```
 ---
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
 ### Services Folder
@@ -1116,7 +1116,7 @@ module.exports = {
 };
 ```
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
 
@@ -1152,7 +1152,7 @@ module.exports = db;
 
 ---
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
 
@@ -1291,7 +1291,7 @@ const router = express.Router();
 
 ---
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
 
@@ -1528,7 +1528,7 @@ await db.query('UPDATE users SET reset_token = ? WHERE email = ?', [resetToken, 
 
 ---
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
 
@@ -1714,7 +1714,7 @@ module.exports = {
 
 ---
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
 
@@ -1934,7 +1934,7 @@ JOIN users ON comments.user_id = users.id
 
 ---
 
-**[⬆ kembali ke atas](#daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
 
@@ -2177,7 +2177,7 @@ module.exports = {
    console.error('Error creating episode:', error);
    ```
 
-   **[⬆ kembali ke atas](#daftar-isi)**
+   **[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ### 🏁 **Kesimpulan**
 
@@ -2212,7 +2212,7 @@ Kami terbuka untuk kontribusi dan saran!
 
 **"Sebuah langkah awal menuju ekosistem komik digital yang terintegrasi - ringan, aman, dan siap dikembangkan!"**  
 
-**[⬆ Kembali ke Daftar Isi](#-daftar-isi)**
+**[⬆ Kembali ke Daftar Isi](#daftar-isi)**
 
 ---
 
