@@ -1,5 +1,9 @@
 # Webtoon Backend API Documentation
 
+1. M. Sechan Alfarisi (20230040094)
+2. Inda Fadila Ainul Hawa (20230040074)
+3. Muhammad Sinar Agusta (20230040188)
+
 ---
 
 ## **Daftar Isi**
@@ -28,7 +32,7 @@
    - [**Auth Controller**](#auth-controller)
    - [**Comics Controller**](#comics-controller)
    - [**Comments Controller**](#comments-controller)
-   - [**Episode Controller**](#episodes-controller)
+   - [**Episode Controller**](#episode-controller)
 
    </details>  
 - [Kesimpulan](#kesimpulan)
@@ -2142,3 +2146,5 @@ module.exports = {
    ```
 
    **[⬆ kembali ke atas](#daftar-isi)**
+
+   ### Kesimpulan 
