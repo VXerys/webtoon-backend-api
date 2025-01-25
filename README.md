@@ -483,10 +483,6 @@ File ini berisi metadata proyek, daftar dependensi, dan script untuk menjalankan
 
 **[⬆ kembali ke atas](#daftar-isi)**
 
-Berikut adalah revisi lengkap untuk bagian **Auth**, dengan penambahan endpoint **Reset Password** dan **Request Reset Password Code**. Saya juga memastikan setiap endpoint dijelaskan secara rinci dengan struktur yang rapi.
-
----
-
 ### **Penjelasan Endpoint API**
 
 #### **a. Auth**
@@ -742,7 +738,7 @@ Mengembalikan daftar komik beserta metadata pagination.
 
 ---
 
-#### **3. PUT /comics/edit/4
+#### **3. PUT /comics/edit/4**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengedit data komik berdasarkan ID. Data yang dapat diubah adalah:
@@ -765,7 +761,7 @@ Jika berhasil, data komik yang telah diperbarui akan dikembalikan.
 
 ---
 
-#### **4. GET /comics/4
+#### **4. GET /comics/4**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengambil detail data komik berdasarkan ID.
@@ -787,7 +783,7 @@ Mengembalikan data komik secara lengkap berdasarkan ID.
 
 ---
 
-#### **5. DELETE /comics/delete/3
+#### **5. DELETE /comics/delete/3**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk menghapus data komik berdasarkan ID.
@@ -820,7 +816,7 @@ Folder `Episode` digunakan untuk mengelola data episode dari sebuah komik, terma
 
 ---
 
-#### **1. POST /episodes/create
+#### **1. POST /episodes/create**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk membuat episode baru untuk sebuah komik yang telah ada. Data yang diperlukan adalah:
@@ -852,7 +848,7 @@ Jika berhasil, data episode yang baru dibuat akan dikembalikan.
 
 ---
 
-#### **2. GET /episodes/4
+#### **2. GET /episodes/4**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengambil daftar semua episode berdasarkan **ID komik**. Mendukung pagination dengan parameter opsional:
@@ -876,7 +872,7 @@ Mengembalikan daftar episode yang terdaftar dalam komik tersebut, beserta metada
 
 ---
 
-#### **3. PUT /episodes/edit/10
+#### **3. PUT /episodes/edit/10**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengedit data episode berdasarkan ID episode. Data yang dapat diubah adalah:
@@ -906,7 +902,7 @@ Jika berhasil, data episode yang telah diperbarui akan dikembalikan.
 
 ---
 
-#### **4. GET /episodes/details/12
+#### **4. GET /episodes/details/12**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengambil detail lengkap dari sebuah episode berdasarkan **ID episode**.
@@ -928,7 +924,7 @@ Mengembalikan detail episode yang diminta.
 
 ---
 
-#### **5. DELETE /episodes/delete/12
+#### **5. DELETE /episodes/delete/12**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk menghapus sebuah episode berdasarkan **ID episode**.
@@ -964,7 +960,7 @@ Folder `Comments` digunakan untuk mengelola komentar yang berkaitan dengan komik
 
 ---
 
-#### **1. POST /comments/create-comment
+#### **1. POST /comments/create-comment**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk menambahkan komentar baru pada sebuah komik atau episode. Data yang diperlukan adalah:
@@ -994,7 +990,7 @@ Jika berhasil, data komentar yang baru dibuat akan dikembalikan.
 
 ---
 
-#### **2. PUT /comments/edit-comment/7
+#### **2. PUT /comments/edit-comment/7**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengedit komentar berdasarkan **ID komentar**. Data yang dapat diubah adalah:
@@ -1027,7 +1023,7 @@ Jika berhasil, data komentar yang telah diperbarui akan dikembalikan.
 
 ---
 
-#### **3. DELETE /comments/delete-comment/7
+#### **3. DELETE /comments/delete-comment/7**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk menghapus sebuah komentar berdasarkan **ID komentar**.
@@ -1056,7 +1052,7 @@ Jika berhasil, akan mengembalikan pesan konfirmasi penghapusan.
 
 ---
 
-#### **4. GET /comments/get-comment/4
+#### **4. GET /comments/get-comment/4**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengambil semua komentar yang berkaitan dengan **ID komik** tertentu. Mendukung pagination dengan parameter opsional:
@@ -1080,7 +1076,7 @@ Mengembalikan daftar komentar yang terkait dengan komik tersebut, beserta metada
 
 ---
 
-#### **5. GET /comments/get-comment-episode/8
+#### **5. GET /comments/get-comment-episode/8**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengambil semua komentar yang berkaitan dengan **ID episode** tertentu. Mendukung pagination dengan parameter opsional:
@@ -1594,4 +1590,643 @@ module.exports = {
 
 **[⬆ kembali ke atas](#daftar-isi)**
 
---- 
+---
+
+### 📁 Database Connection
+```javascript
+const db = require('../db/connection');
+```
+- Modul untuk mengelola koneksi database MySQL
+- Menggunakan promise wrapper untuk operasi async/await
+
+---
+
+### ✨ createComic()
+```javascript
+const createComic = async (req, res) => {
+  // ...implementation
+}
+```
+
+#### 1. **Ekstraksi Parameter**
+```javascript
+const { title, genre, description, creator_id, cover_image_url, status } = req.body;
+```
+- Menerima 6 parameter dari request body:
+  - `title` (wajib): Judul komik (string)
+  - `creator_id` (wajib): ID pembuat komik (number)
+  - `genre`: Genre komik (string opsional)
+  - `description`: Deskripsi panjang (text opsional)
+  - `cover_image_url`: URL gambar cover (string opsional)
+  - `status`: Status publikasi (default: 'ongoing')
+
+#### 2. **Validasi Input**
+```javascript
+if (!title || !creator_id) {
+  return res.status(400).json({ message: 'Title and creator_id are required' });
+}
+```
+- Memastikan field wajib terisi
+- Tidak ada validasi tipe data tambahan
+
+#### 3. **Default Value Handling**
+```javascript
+status || 'ongoing'
+```
+- Set nilai default `status` ke 'ongoing' jika tidak disediakan
+
+#### 4. **Operasi Database**
+```sql
+INSERT INTO comics (title, genre, description, creator_id, cover_image_url, status)
+VALUES (?, ?, ?, ?, ?, ?)
+```
+- Menggunakan parameterized query
+- Tidak ada validasi foreign key untuk `creator_id`
+
+#### 5. **Error Handling**
+```javascript
+} catch (error) {
+  console.error('Error creating comic:', error);
+  res.status(500).json({ message: 'Internal server error' });
+}
+```
+- Menangkap error umum database
+- Log error di server side
+
+---
+
+### 📚 getAllComics()
+```javascript
+const getAllComics = async (req, res) => {
+  // ...implementation
+}
+```
+
+#### 1. **Query Database**
+```sql
+SELECT * FROM comics
+```
+- Mengambil semua kolom tanpa filter
+- Tidak ada pagination atau limit hasil
+
+#### 2. **Response Structure**
+```javascript
+res.status(200).json(comics)
+```
+- Mengembalikan array langsung dari database
+- Format response mentah tanpa transformasi data
+
+---
+
+### 🔍 getComicById()
+```javascript
+const getComicById = async (req, res) => {
+  // ...implementation
+}
+```
+
+#### 1. **Validasi ID**
+```javascript
+const { id } = req.params
+```
+- Mengambil ID dari URL parameter
+- Tidak ada validasi format numerik
+
+#### 2. **Pencarian Database**
+```sql
+SELECT * FROM comics WHERE id = ?
+```
+- Menggunakan parameterized query untuk pencarian
+- Return single object bukan array
+
+#### 3. **Handling Not Found**
+```javascript
+if (results.length === 0) {
+  return res.status(404).json({ message: 'Comic not found' });
+}
+```
+- Pemeriksaan keberadaan data eksplisit
+
+---
+
+### ✏️ editComic()
+```javascript
+const editComic = async (req, res) => {
+  // ...implementation
+}
+```
+
+#### 1. **Update Logic**
+```sql
+UPDATE comics SET 
+  title = ?, 
+  genre = ?, 
+  description = ?, 
+  creator_id = ?, 
+  cover_image_url = ?, 
+  status = ? 
+WHERE id = ?
+```
+- Update semua field sekaligus
+- Tidak ada pengecekan perubahan data
+
+#### 2. **Validasi Minimal**
+```javascript
+if (!title || !creator_id) {
+  return res.status(400).json({ message: 'Title and creator_id are required' });
+}
+```
+- Validasi sama dengan create endpoint
+- Tidak ada pengecekan kepemilikan resource
+
+---
+
+### 🗑️ deleteComic()
+```javascript
+const deleteComic = (req, res) => {
+  // ...implementation
+}
+```
+
+#### 1. **Operasi Penghapusan**
+```sql
+DELETE FROM comics WHERE id = ?
+```
+- Penghapusan permanen (hard delete)
+- Tidak ada pengecekan keberadaan data sebelumnya
+
+---
+
+### 🛠️ Ekspor Modul
+```javascript
+module.exports = {
+  getAllComics,
+  getComicById,
+  createComic,
+  editComic,
+  deleteComic
+}
+```
+- Mengekspos 5 fungsi controller utama
+- Siap diintegrasikan dengan router Express
+
+---
+
+**[⬆ kembali ke atas](#daftar-isi)**
+
+---
+
+### 📁 Database Connection
+```javascript
+const db = require('../db/connection');
+```
+- Mengimpor modul koneksi database dari `../db/connection.js`
+- Digunakan untuk mengeksekusi query SQL menggunakan promise wrapper
+
+---
+
+### createComment()
+```javascript
+const createComment = async (req, res) => {
+  // ...implementation
+}
+```
+
+#### 1. **Ekstraksi Parameter**
+```javascript
+const { comment_text, comic_id, user_id, episode_id } = req.body;
+```
+- Mengekstrak parameter dari body request:
+  - `comment_text`: Teks komentar (wajib)
+  - `comic_id`: ID komik terkait (wajib)
+  - `user_id`: ID user pembuat (wajib)
+  - `episode_id`: ID episode (opsional)
+
+#### 2. **Validasi Dasar**
+```javascript
+if (!comment_text || !comic_id || !user_id) {
+  return res.status(400).json({ message: 'Comment text, comic_id, and user_id are required' });
+}
+
+if (typeof comment_text !== 'string') {
+  return res.status(400).json({ message: 'Comment must be a string' });
+}
+```
+- Memastikan field wajib tersedia
+- Memvalidasi tipe data teks komentar
+
+#### 3. **Sanitasi Input**
+```javascript
+const trimmedComment = comment_text.trim();
+if (trimmedComment.length < 3 || trimmedComment.length > 255) {
+  return res.status(400).json({ message: 'Comment must be between 3 and 255 characters' });
+}
+```
+- Membersihkan whitespace berlebih
+- Membatasi panjang teks komentar (3-255 karakter)
+
+#### 4. **Validasi Numerik**
+```javascript
+if (isNaN(comic_id) || isNaN(user_id) || (episode_id && isNaN(episode_id))) {
+  return res.status(400).json({ message: 'comic_id, user_id, and episode_id (if provided) must be valid numbers.' });
+}
+```
+- Memastikan semua ID berupa angka valid
+- Menggunakan `isNaN` untuk mengecek konversi numerik
+
+#### 5. **Pemeriksaan Referensi Database**
+```javascript
+const [userCheck] = await db.query('SELECT * FROM users WHERE id = ?', [user_id]);
+if (userCheck.length === 0) {
+  return res.status(404).json({ message: 'User not found' });
+}
+
+if (episode_id) {
+  const [episodeCheck] = await db.query('SELECT * FROM episodes WHERE id = ? AND comic_id = ?', [episode_id, comic_id]);
+  if (episodeCheck.length === 0) {
+    return res.status(404).json({ message: 'Episode not found' });
+  }
+}
+```
+- Validasi keberadaan user di database
+- Validasi relasi episode dan komik jika episode_id disertakan
+
+#### 6. **Eksekusi Query Insert**
+```javascript
+await db.query(
+  'INSERT INTO comments (comment_text, comic_id, user_id, episode_id, create_at) VALUES (?, ?, ?, ?, NOW())',
+  [trimmedComment, comic_id, user_id, episode_id || null]
+);
+```
+- Menggunakan parameterized query untuk mencegah SQL injection
+- `episode_id` di-set ke `null` jika tidak disediakan
+- `NOW()` untuk timestamp otomatis
+
+---
+
+### editComment()
+```javascript
+const editComment = async (req, res) => {
+  // ...implementation
+}
+```
+
+#### 1. **Validasi ID Komentar**
+```javascript
+let { id } = req.params;
+if (!id || isNaN(id)) {
+  return res.status(404).json({ message: 'Valid comment ID is required' });
+}
+```
+- Memastikan parameter ID valid dan berupa angka
+
+#### 2. **Validasi Konten Komentar**
+```javascript
+const trimmedComment = comment_text.trim();
+if (trimmedComment.length < 3 || trimmedComment.length > 255) {
+  return res.status(400).json({ message: 'Comment must be between 3 and 255 characters' });
+}
+```
+- Validasi identik dengan createComment untuk konsistensi
+
+#### 3. **Pemeriksaan Eksistensi Komentar**
+```javascript
+const [findComment] = await db.query('SELECT * FROM comments WHERE id = ?', [id])
+if (findComment.length == 0) {
+  return res.status(404).json({ message: 'Comment not found' });
+}
+```
+- Verifikasi komentar benar-benar ada sebelum update
+
+#### 4. **Eksekusi Query Update**
+```javascript
+await db.query('UPDATE comments SET comment_text = ? WHERE id = ?', [trimmedComment, id]);
+```
+- Hanya memperbarui kolom `comment_text`
+- Tidak mengubah kepemilikan komentar (`user_id`) atau relasi
+
+---
+
+### deleteComment()
+```javascript
+const deleteComment = async (req, res) => {
+  // ...implementation
+}
+```
+
+#### 1. **Validasi Cascade**
+```javascript
+const [findComment] = await db.query('SELECT * FROM comments WHERE id = ?', [id])
+if (findComment.length == 0) {
+  return res.status(404).json({ message: 'Comment not found' });
+}
+```
+- Pemeriksaan ganda sebelum penghapusan
+- Mencegah operasi yang tidak perlu jika komentar tidak ada
+
+#### 2. **Eksekusi Penghapusan**
+```javascript
+await db.query('DELETE FROM comments WHERE id = ?', [id]);
+```
+- Menggunakan soft delete (permanen)
+- Pertimbangkan arsitektur soft delete jika diperlukan
+
+---
+
+### getCommentsByComicId()
+```javascript
+const getCommentsByComicId = async (req, res) => {
+  // ...implementation
+}
+```
+
+#### 1. **Struktur Query**
+```javascript
+ORDER BY create_at DESC
+```
+- Menampilkan komentar terbaru pertama
+- Pengurutan dilakukan di database untuk efisiensi
+
+#### 2. **Response Format**
+```javascript
+res.status(200).json({ comic_id, comments });
+```
+- Mengembalikan ID komik untuk referensi
+- Array komentar dalam bentuk mentah dari database
+
+---
+
+### getCommentsByEpisodeId()
+```javascript
+const getCommentsByEpisodeId = async (req, res) => {
+  // ...implementation
+}
+```
+
+#### 1. **Complex Join Query**
+```sql
+SELECT 
+  comments.id AS comment_id,
+  users.username AS user_name
+FROM comments
+JOIN users ON comments.user_id = users.id
+```
+- Join dengan tabel users untuk mendapatkan username
+- Alias kolom untuk respons yang lebih deskriptif
+
+#### 2. **Struktur Respons Terformat**
+```javascript
+{
+  "episode_id": "number",
+  "comments": [
+    {
+      "user_name": "string" // Ditambahkan dari join
+    }
+  ]
+}
+```
+- Menyertakan informasi user tanpa expose data sensitif
+- Struktur respons yang lebih informatif
+
+---
+
+**[⬆ kembali ke atas](#daftar-isi)**
+
+### 📁 Database Connection
+```javascript
+const db = require('../db/connection');
+```
+- Menggunakan modul koneksi database yang sama dengan controller lain
+- Bertanggung jawab untuk eksekusi query SQL
+
+---
+
+### ✨ createEpisode()
+```javascript
+const createEpisode = async (req, res) => { ... }
+```
+
+#### 1. **Validasi Input**
+```javascript
+// Validasi field wajib
+if (!episode_number || !title || !content_url || !comic_id) {
+  return res.status(400).json({ message: 'All fields are required' });
+}
+
+// Validasi tipe data episode_number
+if (typeof episode_number !== 'number' || episode_number < 0) {
+  return res.status(400).json({ message: 'Episode number must be a non-negative number' });
+}
+
+// Validasi format title
+if (typeof title !== 'string' || title.trim().length === 0 || title.length > 255) {
+  return res.status(400).json({ message: 'Title must be a non-empty string with a maximum length of 255 characters' });
+}
+
+// Validasi format content_url
+if (typeof content_url !== 'string' || content_url.trim().length === 0 || content_url.length > 2048) {
+  return res.status(400).json({ message: 'Content URL must be a non-empty string with a maximum length of 2048 characters' });
+}
+```
+- Memastikan semua field wajib terisi
+- Validasi ketat untuk tipe data dan format input
+- Pembatasan panjang string sesuai kebutuhan database
+
+#### 2. **Pemeriksaan Referensi**
+```javascript
+// Cek keberadaan komik
+const [comic] = await db.query('SELECT * FROM comics WHERE id = ?', [comic_id]);
+if (!comic) {
+  return res.status(404).json({ message: 'Comic not found' });
+}
+
+// Cek duplikasi episode number
+const [results] = await db.query('SELECT * FROM episodes WHERE comic_id = ? AND episode_number = ?', [comic_id, episode_number]);
+if (results.length > 0) {
+  return res.status(400).json({ message: 'Episode number already exists for this comic' });
+}
+```
+- Memverifikasi referensi komik yang valid
+- Mencegah duplikasi nomor episode dalam satu komik
+
+#### 3. **Operasi Database**
+```javascript
+await db.query(
+  'INSERT INTO episodes (comic_id, episode_number, title, content_url) VALUES (?, ?, ?, ?)',
+  [comic_id, episode_number, title, content_url]
+);
+```
+- Menggunakan parameterized query untuk keamanan
+- Menyimpan data episode tanpa timestamp otomatis
+
+---
+
+### 📚 getEpisodeByComicId()
+```javascript
+const getEpisodeByComicId = async (req, res) => { ... }
+```
+
+#### 1. **Validasi Input**
+```javascript
+if (!comic_id || isNaN(comic_id)) {
+  return res.status(400).json({ message: 'Comic ID is required' });
+}
+```
+- Memastikan comic_id berupa angka valid
+
+#### 2. **Query Database**
+```javascript
+const [episodes] = await db.query(
+  'SELECT episode_number, title FROM episodes WHERE comic_id = ? ORDER BY episode_number ASC', 
+  [comic_id]
+);
+```
+- Hanya mengambil data esensial (nomor episode dan judul)
+- Pengurutan berdasarkan nomor episode ascending
+
+#### 3. **Format Response**
+```javascript
+res.status(200).json({
+  comic_id,
+  episode_number: episodes.map((episode) => ({
+    title: episode.title,
+    episode_number: episode.episode_number
+  })),
+});
+```
+- Struktur respons terorganisir dengan grouping komik
+- Menghilangkan field sensitif seperti content_url
+
+---
+
+### ✏️ editEpisode()
+```javascript
+const editEpisode = async (req, res) => { ... }
+```
+
+#### 1. **Validasi Parameter**
+```javascript
+if(!id || isNaN(id)) {
+  return res.status(400).json({ message: 'Episode ID is required' });
+}
+
+if (!episode_number || !title || !content_url) {
+  return res.status(400).json({ message: 'Episode number, title, and content_url are required.' });
+}
+```
+- Validasi ID episode dan kelengkapan data
+- Tidak ada validasi tipe data tambahan
+
+#### 2. **Pemeriksaan Eksistensi**
+```javascript
+const[episodeCheck] = await db.query('SELECT * FROM episodes WHERE id = ?', [id]);
+if (episodeCheck.length === 0) {
+  return res.status(404).json({ message: 'Episode not found' });
+}
+```
+- Verifikasi episode benar-benar ada sebelum update
+
+#### 3. **Update Data**
+```javascript
+await db.query(
+  'UPDATE episodes SET episode_number = ?, title = ?, content_url = ? WHERE id = ?',
+  [episode_number, title, content_url, id]
+);
+```
+- Update semua field sekaligus
+- Tidak ada pengecekan perubahan data
+
+---
+
+### 🗑️ deleteEpisode()
+```javascript
+const deleteEpisode = async (req, res) => { ... }
+```
+
+#### 1. **Validasi Dasar**
+```javascript
+if (!id) {
+  return res.status(400).json({ message: 'Episode ID is required' });
+}
+```
+- Validasi sederhana untuk parameter ID
+
+#### 2. **Konfirmasi Eksistensi**
+```javascript
+const [episodeCheck] = await db.query('SELECT * FROM episodes WHERE id = ?', [id]);
+if (episodeCheck === 0) {
+  return res.status(404).json({ message: 'Episode not found' });
+}
+```
+- Penghapusan hanya dilakukan jika episode ditemukan
+
+#### 3. **Operasi Penghapusan**
+```javascript
+await db.query('DELETE FROM episodes WHERE id = ?', [id]);
+```
+- Hard delete tanpa backup
+- Tidak ada mekanisme soft delete
+
+---
+
+### 🔍 getEpisodeDetails()
+```javascript
+const getEpisodeDetails = async (req, res) => { ... }
+```
+
+#### 1. **Validasi ID**
+```javascript
+if (!id || isNaN(id)) {
+  return res.status(400).json({ message: 'Episode ID is required' });
+}
+```
+- Memastikan parameter ID valid
+
+#### 2. **Query Database**
+```javascript
+const [episode] = await db.query('SELECT * FROM episodes WHERE id = ?', [id]);
+```
+- Mengambil semua kolom dari tabel episodes
+
+#### 3. **Format Respons**
+```javascript
+res.status(200).json({
+  episode: episode[0],
+});
+```
+- Mengembalikan objek episode lengkap
+- Menampilkan semua field termasuk content_url
+
+---
+
+### 🛠️ Ekspor Modul
+```javascript
+module.exports = { 
+  getEpisodeByComicId, 
+  createEpisode, 
+  editEpisode, 
+  deleteEpisode, 
+  getEpisodeDetails 
+};
+```
+- Mengekspos 5 fungsi utama untuk manajemen episode
+- Siap diintegrasikan dengan router Express
+
+---
+
+### 🔄 Alur Error Handling
+1. **Try-Catch Block**  
+   Semua fungsi menggunakan blok try-catch untuk menangani error database
+
+2. **Response Konsisten**  
+   - 400 Bad Request: Validasi input gagal
+   - 404 Not Found: Data tidak ditemukan
+   - 500 Internal Server Error: Kesalahan server umum
+
+3. **Logging Error**  
+   Mencatat error di console untuk kebutuhan debugging:
+   ```javascript
+   console.error('Error creating episode:', error);
+   ```
+
+   **[⬆ kembali ke atas](#daftar-isi)**
