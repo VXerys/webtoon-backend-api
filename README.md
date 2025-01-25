@@ -1147,6 +1147,136 @@ module.exports = {
   checkRole
 };
 ```
+
+Berikut dokumentasi teknis untuk `uploadMiddleware.js`:
+
+---
+
+#### 📁 **uploadMiddleware**  
+*Middleware untuk Handle File Upload dengan Multer*
+
+```javascript
+const multer = require('multer');
+const path = require('path');
+
+// Konfigurasi penyimpanan file
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'tmp/');
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${Date.now()}${ext}`);
+  }
+});
+
+// Filter tipe file
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Hanya file gambar yang diperbolehkan!'), false);
+  }
+};
+
+// Konfigurasi utama multer
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB
+});
+
+module.exports = upload;
+```
+
+---
+
+##### 🔧 **Konfigurasi Parameter**
+| Parameter         | Nilai                  | Deskripsi                                  |
+|-------------------|------------------------|--------------------------------------------|
+| `destination`     | `tmp/`                 | Folder penyimpanan sementara               |
+| `filename`        | `Timestamp + Ekstensi` | Format penamaan file unik                  |
+| `fileFilter`      | `image/*`              | Hanya menerima file gambar                 |
+| `limits.fileSize` | `10MB`                 | Batas maksimal ukuran file                 |
+
+---
+
+##### 🛠️ **Cara Penggunaan**
+### Di Routes
+```javascript
+const express = require('express');
+const router = express.Router();
+const upload = require('../middlewares/uploadMiddleware');
+
+router.post('/upload', upload.single('cover_image'), (req, res) => {
+  // File tersedia di req.file
+  console.log(req.file);
+});
+```
+
+---
+
+##### 🚨 **Error Handling**
+### Contoh Error Response
+```json
+{
+  "error": "File upload failed",
+  "message": "Hanya file gambar yang diperbolehkan!"
+}
+```
+
+###### Jenis Error
+1. **Invalid File Type** (400 Bad Request)
+2. **File Too Large** (413 Payload Too Large)
+3. **No File Selected** (400 Bad Request)
+
+---
+
+##### 📂 **Struktur File Temporary**
+```
+project-root/
+└── tmp/
+    ├── 123456789.jpg
+    ├── 987654321.png
+    └── ...
+```
+
+---
+
+##### 🔒 **Best Practices**
+1. **Validasi Ekstensi File**
+   ```javascript
+   const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+   if (!allowedExtensions.includes(ext.toLowerCase())) {
+     cb(new Error('Ekstensi file tidak didukung'), false);
+   }
+   ```
+   
+2. **Auto-Cleanup**  
+   Hapus file temporary setelah diproses:
+   ```javascript
+   fs.unlinkSync(req.file.path);
+   ```
+
+3. **Environment Safety**  
+   Tambahkan `.gitignore`:
+   ```gitignore
+   tmp/
+   ```
+
+---
+
+##### 📸 **Contoh Penggunaan di Postman**
+![Postman Example](https://via.placeholder.com/800x400?text=Form-Data+Upload+Example)
+```http
+POST /api/upload
+Headers:
+- Content-Type: multipart/form-data
+
+Body:
+- Key: cover_image (Type: File)
+- Key: other_field (Type: Text)
+```
 ---
 
 **[⬆ Kembali ke Daftar Isi](#daftar-isi)**
