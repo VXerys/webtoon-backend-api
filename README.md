@@ -69,7 +69,7 @@ Dibangun untuk mendukung aplikasi frontend (web/mobile) dengan arsitektur RESTfu
 | Komponen       | Teknologi               | Ikon |  
 |----------------|-------------------------|------|  
 | **Backend**    | Node.js + Express       | 🟢 |  
-| **Database**   | MySQL + Sequelize       | 🐬 |  
+| **Database**   | MySQL                   | 🐬 |  
 | **Auth**       | JWT + Bcrypt            | 🔐 |  
 | **Testing**    | Postman                 | 📡 |  
 
@@ -90,11 +90,6 @@ Dibangun untuk mendukung aplikasi frontend (web/mobile) dengan arsitektur RESTfu
 - Platform self-publishing creator  
 - Sistem manajemen konten publisher  
 - Integrasi dengan aplikasi mobile/web  
-
----
-
-> 💡 **Catatan Developer**:  
-> "_Arsitektur ini dirancang untuk mudah dikembangkan dengan fitur premium seperti sistem langganan, analytics, dan integrasi pembayaran._"
 
 ---
 
@@ -968,6 +963,10 @@ app.listen(PORT, () => {
 
 ---
 
+**[⬆ kembali ke atas](#daftar-isi)**
+
+---
+
 ### Middlewares Folder
 
 #### **jwtMiddlewares file**
@@ -1020,6 +1019,7 @@ module.exports = {
   checkRole
 };
 ```
+---
 
 **[⬆ kembali ke atas](#daftar-isi)**
 
@@ -1290,6 +1290,8 @@ const router = express.Router();
 **[⬆ kembali ke atas](#daftar-isi)**
 
 ---
+
+### Controller
 
 ### Auth Controller
 
