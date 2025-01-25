@@ -20,14 +20,16 @@
   <details>
    <summary>Klik untuk melihat semua langkah</summary>
       
-   - [**Server File**](#1-server-file)
-   - [**JWT Middlewares File**](#2-jwtMiddlewares-file)
-   - [**Email Service File**](#3-emailServices-file)
-   - [**Connection Database File**](#4-connection-file)
-   - [**Auth Routes File**](#5-authRoutes-file)
-   - [**Comics Routes File**](#6-comicsRoutes-file)
-   - [**Comments Routes File**](#7-commentsRoutes-file)
-   - [**Episode Routes File**](#8-episodeRoutes-file)
+   - [**Server File**](#server-file)
+   - [**Middleware Folder**](#middlewares-folder)
+   - [**Service Folder**](#services-folder)
+   - [**Database Folder**](#database-folder)
+   - [**Routes Folder**](#routes-folder)
+   - [**Auth Controller**](#auth-controller)
+   - [**Comics Controller**](#comics-controller)
+   - [**Comments Controller**](#comments-controller)
+   - [**Episode Controller**](#episodes-controller)
+
    </details>  
 - [Kesimpulan](#kesimpulan)
 
@@ -67,6 +69,8 @@ Baik, kita akan melanjutkan ke bagian **Database**. Berikut adalah penjelasan da
 ---
 
 **[⬆ kembali ke atas](#daftar-isi)**
+
+---
 
 ## **Database**
 
@@ -215,88 +219,11 @@ INSERT INTO comments (episode_id, user_id, content)
 VALUES (1, 4, 'Amazing episode! Can’t wait for the next one.');
 ```
 
-**5. Tabel `likes`**
-
-Tabel ini mencatat informasi tentang pengguna yang memberikan "like" pada komik tertentu. Dengan struktur ini, setiap pengguna dapat memberikan satu "like" pada sebuah komik. Kolom-kolom utama meliputi:  
-- `id` (Primary Key): ID unik untuk setiap "like".  
-- `comic_id` (Foreign Key): Mengacu ke ID komik yang mendapatkan "like".  
-- `user_id` (Foreign Key): Mengacu ke ID pengguna yang memberikan "like".  
-- `created_at`: Waktu "like" ditambahkan.  
-
-**Query untuk Tabel `likes`**:  
-```sql
--- Membuat tabel likes
-CREATE TABLE likes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    comic_id INT NOT NULL,
-    user_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (comic_id) REFERENCES comics(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- Menambahkan "like" baru
-INSERT INTO likes (comic_id, user_id)
-VALUES (1, 4);
-```
-
-**6. Tabel `notifications`**
-
-Tabel ini dirancang untuk menyimpan pemberitahuan yang dikirimkan kepada pengguna. Contohnya mencakup informasi tentang episode baru atau notifikasi sistem lainnya. Kolom-kolom utama meliputi:  
-- `id` (Primary Key): ID unik untuk setiap notifikasi.  
-- `user_id` (Foreign Key): Mengacu ke ID pengguna yang menerima notifikasi.  
-- `message`: Isi notifikasi.  
-- `is_read`: Status apakah notifikasi sudah dibaca (Boolean).  
-- `created_at`: Waktu notifikasi dikirimkan.  
-
-**Query untuk Tabel `notifications`**:  
-```sql
--- Membuat tabel notifications
-CREATE TABLE notifications (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    message TEXT NOT NULL,
-    is_read BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- Menambahkan notifikasi baru
-INSERT INTO notifications (user_id, message)
-VALUES (4, 'A new episode is now available for Lookism!');
-```
-
-**7. Tabel `favorites`**
-
-Tabel ini menyimpan data tentang komik yang ditandai sebagai favorit oleh pengguna. Relasi ini memungkinkan pengguna untuk melacak komik yang paling mereka sukai. Kolom-kolom utama meliputi:  
-- `id` (Primary Key): ID unik untuk setiap entri favorit.  
-- `user_id` (Foreign Key): Mengacu ke ID pengguna yang menandai komik sebagai favorit.  
-- `comic_id` (Foreign Key): Mengacu ke ID komik yang ditandai sebagai favorit.  
-- `created_at`: Waktu entri ditambahkan.  
-
-**Query untuk Tabel `favorites`**:  
-```sql
--- Membuat tabel favorites
-CREATE TABLE favorites (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    comic_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (comic_id) REFERENCES comics(id) ON DELETE CASCADE
-);
-
--- Menambahkan favorit baru
-INSERT INTO favorites (user_id, comic_id)
-VALUES (4, 1);
-```
-
-### **Keunggulan Desain dan Optimasi**
-Desain tabel dirancang untuk meminimalkan duplikasi data dan memastikan performa database tetap optimal saat aplikasi berkembang. Foreign Key diterapkan untuk menjaga referensial integritas antar tabel, dan indeks otomatis pada kolom Primary Key mendukung pengambilan data dengan cepat. 
-
---- 
+---
 
 **[⬆ kembali ke atas](#daftar-isi)**
+
+---
 
 ### **Struktur Proyek**
 
