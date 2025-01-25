@@ -597,7 +597,7 @@ Jika berhasil, akan mengembalikan pesan konfirmasi penghapusan.
 ---
 
 
-#### **c. Episode**
+#### **Episode**
 
 Folder `Episode` digunakan untuk mengelola data episode dari sebuah komik, termasuk membuat episode baru, membaca daftar episode berdasarkan ID komik, mengedit, menghapus, dan melihat detail dari sebuah episode tertentu. Berikut daftar endpoint yang tersedia:
 
