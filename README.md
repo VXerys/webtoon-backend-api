@@ -24,10 +24,22 @@
       
    - [**Endpoint Auth**](#auth)
    - [**Endpoint Comics**](#comics)
-   - [**Endpoint Episodes**](#episodes)
+   - [**Endpoint Episode**](#episode)
    - [**Endpoint Comments**](#comments)
    </details> 
-- [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)  
+- [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)
+  <details>
+   <summary>Klik untuk melihat semua langkah</summary>
+      
+   - [**Server File**](#1-server.js)
+   - [**JWT Middlewares File**](#2-jwtMiddlewares.js)
+   - [**Email Service File**](#3-emailServices.js)
+   - [**Connection Database File**](#4-connection.js)
+   - [**Auth Routes File**](#5-authRoutes.js)
+   - [**Comics Routes File**](#6-comicsRoutes.js)
+   - [**Comments Routes File**](#7-commentsRoutes.js)
+   - [**Episode Routes File**](#8-episodeRoutes.js)
+   </details>  
 - [Kesimpulan](#kesimpulan)
 
 ---
@@ -398,6 +410,10 @@ Folder ini berisi logika utama (business logic) untuk menangani berbagai fitur a
 
 ---
 
+**[⬆ kembali ke atas](#daftar-isi)**
+
+---
+
 #### **2. Folder `routes`**
 Folder ini mendefinisikan endpoint untuk API dan menghubungkan setiap endpoint ke fungsi yang relevan di dalam controller.
 
@@ -431,6 +447,9 @@ Folder ini mendefinisikan endpoint untuk API dan menghubungkan setiap endpoint k
 
 ---
 
+**[⬆ kembali ke atas](#daftar-isi)**
+
+---
 #### **3. Folder `middleware`**
 Folder ini berisi middleware untuk memproses request sebelum diteruskan ke controller.  
 - **`jwtMiddleware.js`**:  
