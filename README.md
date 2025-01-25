@@ -31,14 +31,14 @@
   <details>
    <summary>Klik untuk melihat semua langkah</summary>
       
-   - [**Server File**](#1-server.js)
-   - [**JWT Middlewares File**](#2-jwtMiddlewares.js)
-   - [**Email Service File**](#3-emailServices.js)
-   - [**Connection Database File**](#4-connection.js)
-   - [**Auth Routes File**](#5-authRoutes.js)
-   - [**Comics Routes File**](#6-comicsRoutes.js)
-   - [**Comments Routes File**](#7-commentsRoutes.js)
-   - [**Episode Routes File**](#8-episodeRoutes.js)
+   - [**Server File**](#1-server-file)
+   - [**JWT Middlewares File**](#2-jwtMiddlewares-file)
+   - [**Email Service File**](#3-emailServices-file)
+   - [**Connection Database File**](#4-connection-file)
+   - [**Auth Routes File**](#5-authRoutes-file)
+   - [**Comics Routes File**](#6-comicsRoutes-file)
+   - [**Comments Routes File**](#7-commentsRoutes-file)
+   - [**Episode Routes File**](#8-episodeRoutes-file)
    </details>  
 - [Kesimpulan](#kesimpulan)
 
@@ -1133,9 +1133,11 @@ Mengembalikan daftar komentar yang terkait dengan episode tersebut, beserta meta
 
 **[⬆ kembali ke atas](#daftar-isi)**
 
+---
+
 ## **Kode Utama dan Fungsionalitas**
 
-### **1. server.js**
+### **Server file**
 File `server.js` merupakan entry point dari aplikasi backend. File ini bertanggung jawab untuk mengatur server Express, middleware, dan routing ke berbagai fitur aplikasi. Berikut adalah penjelasan fungsi utama dalam file ini:
 
 #### **Fungsi Utama:**
@@ -1177,10 +1179,12 @@ app.listen(PORT, () => {
 
 ---
 
-### **2. jwtMiddlewares.js**
+### Middlewares Folder
+
+#### **jwtMiddlewares file**
 File `jwtMiddlewares.js` berisi middleware untuk autentikasi dan otorisasi berbasis JWT (JSON Web Token). File ini bertanggung jawab memastikan request yang masuk memiliki token valid dan memverifikasi apakah pengguna memiliki izin untuk mengakses resource tertentu.
 
-#### **Fungsi Utama:**
+##### **Fungsi Utama:**
 1. **`verifyTokenJWT`**  
    - Mengecek apakah request memiliki header otorisasi dengan token JWT.  
    - Memverifikasi token menggunakan kunci rahasia (`process.env.JWT_SECRET`).  
@@ -1190,7 +1194,7 @@ File `jwtMiddlewares.js` berisi middleware untuk autentikasi dan otorisasi berba
    - Middleware untuk membatasi akses berdasarkan peran pengguna.
    - Mengambil parameter `requiredRoles` (array peran) dan mengecek apakah peran pengguna sesuai dengan yang diperlukan.
 
-#### **Kode:**
+##### **Kode:**
 ```javascript
 const jwt = require('jsonwebtoken');
 
@@ -1228,9 +1232,12 @@ module.exports = {
 };
 ```
 
----
+**[⬆ kembali ke atas](#daftar-isi)**
 
-### **3. emailServices.js**
+---
+### Services Folder
+
+#### **emailServices file**
 File `emailServices.js` digunakan untuk menangani pengiriman email, seperti email verifikasi dan reset password. File ini menggunakan modul `nodemailer` untuk mengirim email melalui server SMTP.
 
 #### **Fungsi Utama:**
@@ -1316,10 +1323,13 @@ module.exports = {
 };
 ```
 
+**[⬆ kembali ke atas](#daftar-isi)**
+
 ---
 
+### Database Folder
 
-### **4. connection.js (Database Connection)**
+#### **connection (DB)**
 
 ```javascript
 const mysql = require('mysql2/promise');
@@ -1349,281 +1359,387 @@ module.exports = db;
 
 ---
 
-### **5. authRoutes.js**
-
-```javascript
-const express = require('express');
-const { registerUser, verifyUser, loginUser, resetPassword, requestResetPassword } = require('../controllers/authController');
-const { verifyTokenJWT, checkRole } = require('../middlewares/jwtMiddlewares');
-
-const router = express.Router();
-
-// Public routes
-router.post('/register', registerUser);
-router.post('/verify', verifyUser);
-router.post('/login', loginUser);
-router.post('/request-reset-password', requestResetPassword);
-router.post('/reset-password', resetPassword);
-
-// Protected routes with role-based access (example)
-// router.get('/profile', verifyTokenJWT, (req, res) => {
-//     res.json({ message: `Welcome, User ID: ${req.user.id}` });
-// });
-
-// router.get('/admin', verifyTokenJWT, checkRole(['admin']), (req, res) => {
-//     res.json({ message: 'Welcome Admin!' });
-// });
-
-module.exports = router;
-```
-
-**Perubahan dan peningkatan:**
-1. Membersihkan komentar yang tidak diperlukan, tetapi menyimpan contoh untuk role-based access.
-2. Menambahkan komentar untuk membedakan antara public dan protected routes.
+**[⬆ kembali ke atas](#daftar-isi)**
 
 ---
 
-### **6. comicsRoutes.js**
+### Routes Folder
 
+### 🔐 authRoutes.js
 ```javascript
 const express = require('express');
-const { createComic, getComicById, getAllComics, editComic, deleteComic } = require('../controllers/comicsController');
-const { verifyTokenJWT } = require('../middlewares/jwtMiddlewares');
-
 const router = express.Router();
-
-// Public routes
-router.get('/', getAllComics);
-router.get('/:id', getComicById);
-
-// Protected routes
-router.post('/create', verifyTokenJWT, createComic);
-router.put('/edit/:id', verifyTokenJWT, editComic);
-router.delete('/delete/:id', verifyTokenJWT, deleteComic);
-
-module.exports = router;
+// ...imports dan setup controller
 ```
 
-**Perubahan dan peningkatan:**
-1. Menambahkan kategori komentar untuk public dan protected routes.
-2. Membuat struktur lebih mudah dipahami.
+#### 🚪 Public Routes
+| Method | Endpoint                | Controller              | Deskripsi                                                                 |
+|--------|-------------------------|-------------------------|---------------------------------------------------------------------------|
+| POST   | `/register`             | `registerUser`          | Registrasi user baru dengan verifikasi email                              |
+| POST   | `/verify`               | `verifyUser`            | Verifikasi akun menggunakan kode dari email                               |
+| POST   | `/login`                | `loginUser`             | Autentikasi user dan return JWT token                                     |
+| POST   | `/request-reset-password` | `requestResetPassword` | Request reset password dengan mengirim token ke email                     |
+| POST   | `/reset-password`       | `resetPassword`         | Reset password menggunakan token yang valid                               |
+
+#### 🔒 Protected Routes (Contoh)
+```javascript
+// router.get('/profile', verifyTokenJWT, (req, res) => {...});
+// router.get('/admin', verifyTokenJWT, checkRole(['admin']), (req, res) => {...});
+```
+- **Middleware**: 
+  - `verifyTokenJWT`: Validasi token JWT dari header Authorization
+  - `checkRole`: Role-based access control (RBAC)
 
 ---
 
-### **7. commentsRoutes.js**
-
+### 📚 comicsRoutes.js
 ```javascript
 const express = require('express');
-const { createComment, getCommentsByComicId, editComment, deleteComment, getCommentsByEpisodeId } = require('../controllers/commentsController');
-const { verifyTokenJWT } = require('../middlewares/jwtMiddlewares');
-
 const router = express.Router();
-
-// Public routes
-router.get('/get-comments/:comic_id', getCommentsByComicId);
-router.get('/get-comments-episode/:episode_id', getCommentsByEpisodeId);
-
-// Protected routes
-router.post('/create-comment', verifyTokenJWT, createComment);
-router.put('/edit-comment/:id', verifyTokenJWT, editComment);
-router.delete('/delete-comment/:id', verifyTokenJWT, deleteComment);
-
-module.exports = router;
+// ...imports dan setup controller
 ```
 
-**Perubahan dan peningkatan:**
-1. Sama seperti di atas, membedakan public dan protected routes.
-2. Memastikan struktur tetap sederhana dan mudah diikuti.
+#### 🌐 Public Routes
+| Method | Endpoint    | Controller       | Parameter | Deskripsi                                  |
+|--------|-------------|------------------|-----------|--------------------------------------------|
+| GET    | `/`         | `getAllComics`   | -         | Get semua komik dengan pagination implisit |
+| GET    | `/:id`      | `getComicById`   | `id`      | Get detail komik by ID                     |
+
+#### 🛡️ Protected Routes
+| Method | Endpoint       | Middleware       | Controller     | Validasi Input                          |
+|--------|----------------|------------------|----------------|-----------------------------------------|
+| POST   | `/create`      | `verifyTokenJWT` | `createComic`  | - Title (required)                      |
+| PUT    | `/edit/:id`    | `verifyTokenJWT` | `editComic`    | - ID komik valid                        |
+| DELETE | `/delete/:id`  | `verifyTokenJWT` | `deleteComic`  | - Kepemilikan resource                  |
 
 ---
 
-### **8. episodeRoutes.js**
-
+### 💬 commentsRoutes.js
 ```javascript
 const express = require('express');
-const { createEpisode, getEpisodeByComicId, editEpisode, deleteEpisode, getEpisodeDetails } = require('../controllers/episodesController');
-const { verifyTokenJWT } = require('../middlewares/jwtMiddlewares');
-
 const router = express.Router();
-
-// Public routes
-router.get('/:comic_id', getEpisodeByComicId);
-router.get('/details/:id', getEpisodeDetails);
-
-// Protected routes
-router.post('/create', verifyTokenJWT, createEpisode);
-router.put('/edit/:id', verifyTokenJWT, editEpisode);
-router.delete('/delete/:id', verifyTokenJWT, deleteEpisode);
-
-module.exports = router;
+// ...imports dan setup controller
 ```
 
-**Perubahan dan peningkatan:**
-1. Menambahkan kategori public dan protected routes.
-2. Membersihkan struktur supaya lebih konsisten dengan file routes lainnya.
+#### 🌐 Public Routes
+| Method | Endpoint                        | Controller               | Response Format                           |
+|--------|---------------------------------|--------------------------|-------------------------------------------|
+| GET    | `/get-comments/:comic_id`       | `getCommentsByComicId`   | `{ comic_id, comments: [...] }`           |
+| GET    | `/get-comments-episode/:episode_id` | `getCommentsByEpisodeId` | `{ episode_id, comments: [...] }`         |
+
+#### 🛡️ Protected Routes
+| Method | Endpoint             | Validasi                  | Deskripsi                                  |
+|--------|----------------------|---------------------------|--------------------------------------------|
+| POST   | `/create-comment`    | - Minimal 3 karakter      | Create comment dengan relasi user          |
+| PUT    | `/edit-comment/:id`  | - Kepemilikan komentar    | Update text comment                        |
+| DELETE | `/delete-comment/:id`| - Validasi ID numerik     | Hapus comment berdasarkan ID               |
 
 ---
 
+### 📺 episodesRoutes.js
+```javascript
+const express = require('express');
+const router = express.Router();
+// ...imports dan setup controller
+```
+
+#### 🌐 Public Routes
+| Method | Endpoint          | Controller             | Query Parameter          |
+|--------|-------------------|------------------------|--------------------------|
+| GET    | `/:comic_id`      | `getEpisodeByComicId`  | - comic_id (required)    |
+| GET    | `/details/:id`    | `getEpisodeDetails`    | - episode_id (required)  |
+
+#### 🛡️ Protected Routes
+| Method | Endpoint       | Business Logic                   | Catatan                          |
+|--------|----------------|-----------------------------------|----------------------------------|
+| POST   | `/create`      | - Validasi unique episode number | Relasi ke komik                  |
+| PUT    | `/edit/:id`    | - Update metadata episode        | Tidak bisa ubah comic_id         |
+| DELETE | `/delete/:id`  | - Hard delete                    | Pertimbangkan soft delete        |
+
+---
+
+### 🔑 Security Implementation
+1. **JWT Validation**
+   - Token diambil dari header `Authorization` format: `Bearer <token>`
+   - Expire time token: 2 jam
+   - Secret key menggunakan environment variable
+
+2. **Endpoint Protection**
+   ```javascript
+   router.post('/create', verifyTokenJWT, createComic);
+   ```
+   - Pattern: `Middleware -> Controller`
+   - Tidak ada role management di implementasi saat ini
+
+3. **Parameter Handling**
+   - ID parameter selalu divalidasi sebagai numerik
+   ```javascript
+   router.get('/:id', getComicById); // ID auto converted to number
+   ```
+
+---
+
+### 📦 Response Standardization
+1. **Success Response**
+   ```json
+   {
+     "data": {...},
+     "message": "Operasi berhasil"
+   }
+   ```
+2. **Error Response**
+   ```json
+   {
+     "error": "Unauthorized",
+     "message": "Token tidak valid",
+     "statusCode": 401
+   }
+   ```
+
+---
 
 **[⬆ kembali ke atas](#daftar-isi)**
 
-
 ---
 
-### **9. Import Library dan Modul **
+### Auth Controller
+
+#### 📁 Imports
 ```javascript
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const db = require('../db/connection');
-const { sendVerificationEmail, generateVerificationCode, sendResetPasswordEmail, generateResetToken } = require('../services/emailService');
+const { 
+  sendVerificationEmail,
+  generateVerificationCode,
+  sendResetPasswordEmail,
+  generateResetToken 
+} = require('../services/emailService');
 ```
-- **`bcrypt`**: Digunakan untuk mengenkripsi dan memverifikasi password pengguna.
-- **`crypto`**: Untuk menghasilkan token atau kode secara acak (dalam layanan email).
-- **`jsonwebtoken`**: Untuk membuat dan memverifikasi token JWT, yang digunakan untuk autentikasi.
-- **`db`**: Mengimport koneksi database dari file `connection.js`.
-- **Layanan email**: Menggunakan fungsi dari modul `emailService` untuk mengirim email verifikasi atau reset password.
+- **`bcrypt`**: Library hashing password (salt rounds default: 10)
+- **`crypto`**: Generator token kriptografi secure
+- **`jwt`**: Implementasi JSON Web Token untuk session management
+- **`db`**: Koneksi MySQL pool dari konfigurasi lokal
+- **`emailService`**: Modul helper untuk:
+  - `sendVerificationEmail`: Mengirim email verifikasi
+  - `generateVerificationCode`: Membuat kode 6 digit
+  - `sendResetPasswordEmail`: Mengirim instruksi reset password
+  - `generateResetToken`: Membuat token secure 32 byte
 
 ---
 
-### **10. Fungsi `registerUser`**
+#### ✨ registerUser()
 ```javascript
 const registerUser = async (req, res) => { ... }
 ```
-#### Deskripsi:
-Fungsi ini bertanggung jawab untuk mendaftarkan pengguna baru.
 
-#### Penjelasan Langkah:
-1. **Ambil data dari `req.body`**:
-   ```javascript
-   const { username, email, password, confirmPassword } = req.body;
-   ```
-2. **Validasi password**:
-   - Jika `password` tidak sama dengan `confirmPassword`, balas dengan error.
-3. **Cek apakah email sudah ada di database**:
-   ```javascript
-   const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
-   ```
-   - Jika email sudah ada:
-     - Jika akun belum diverifikasi, kirim ulang kode verifikasi.
-     - Jika akun sudah diverifikasi, kirim pesan error.
-4. **Jika email belum ada**:
-   - Hasilkan kode verifikasi dengan `generateVerificationCode`.
-   - Hash password menggunakan `bcrypt`.
-   - Simpan data pengguna baru ke database dan kirim email verifikasi.
-5. **Respon sukses**: 
-   Mengirim pesan bahwa pengguna berhasil didaftarkan.
+##### 1. **Parameter Ekstraksi**
+```javascript
+const { username, email, password, confirmPassword } = req.body;
+```
+- Menerima 4 parameter wajib dari form register
+
+##### 2. **Validasi Dasar**
+```javascript
+if (password !== confirmPassword) {
+  return res.status(400).json({ message: 'Passwords do not match' });
+}
+```
+- Pengecekan kesesuaian password sederhana
+- Tidak ada validasi kekuatan password
+
+##### 3. **Duplikasi Email**
+```javascript
+const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+```
+- Pemeriksaan keberadaan email di database
+- Handle 2 skenario:
+  ```javascript
+  if (existingUser[0] && !existingUser[0].is_verified) {
+    // Kirim ulang verifikasi
+  }
+  if (existingUser[0]?.is_verified) {
+    // Error email terdaftar
+  }
+  ```
+
+##### 4. **Proses Registrasi**
+```javascript
+const verificationCode = generateVerificationCode();
+const hashedPassword = await bcrypt.hash(password, 10);
+await db.query(
+  'INSERT INTO users (username, email, password, verification_code) VALUES (?, ?, ?, ?)',
+  [username, email, hashedPassword, verificationCode]
+);
+```
+- Hash password dengan salt 10 rounds
+- Simpan kode verifikasi plain text di database
 
 ---
 
-### **11. Fungsi `verifyUser`**
+#### 🔑 verifyUser()
 ```javascript
 const verifyUser = async (req, res) => { ... }
 ```
-#### Deskripsi:
-Memverifikasi akun pengguna dengan kode yang dikirim melalui email.
 
-#### Penjelasan Langkah:
-1. **Ambil `email` dan `verificationCode` dari `req.body`**.
-2. **Cari pengguna berdasarkan email**:
-   - Jika tidak ditemukan, balas dengan error.
-3. **Cek validitas kode verifikasi**:
-   - Jika kode tidak cocok, balas dengan error.
-4. **Perbarui status pengguna di database**:
-   - Set `is_verified` menjadi `true` dan hapus kode verifikasi.
-5. **Respon sukses**:
-   Mengirim pesan bahwa verifikasi berhasil.
+##### 1. **Validasi Input**
+```javascript
+const { email, verificationCode } = req.body;
+```
+- Tidak ada validasi format email/kode
+
+##### 2. **Pencarian Pengguna**
+```javascript
+const [user] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+if (!user.length) {
+  return res.status(404).json({ message: 'User not found' });
+}
+```
+- Error handling untuk email tidak terdaftar
+
+##### 3. **Verifikasi Kode**
+```javascript
+if (user[0].verification_code !== verificationCode) {
+  return res.status(400).json({ message: 'Invalid verification code' });
+}
+```
+- Perbandingan string sederhana
+- Tidak ada expiry time untuk kode
 
 ---
 
-### **12. Fungsi `loginUser`**
+#### 🔐 loginUser()
 ```javascript
 const loginUser = async (req, res) => { ... }
 ```
-#### Deskripsi:
-Fungsi ini digunakan untuk autentikasi pengguna yang telah terdaftar.
 
-#### Penjelasan Langkah:
-1. **Validasi input**:
-   - Pastikan `email` dan `password` ada.
-2. **Cari pengguna berdasarkan email**:
-   - Jika tidak ditemukan, balas dengan error.
-3. **Cek status akun**:
-   - Jika akun belum diverifikasi, kirim error.
-4. **Validasi password**:
-   - Gunakan `bcrypt.compare` untuk membandingkan password input dengan password di database.
-   - Jika password salah, kirim error.
-5. **Buat JWT**:
-   - Token berisi `userId` dan `role`, dengan durasi 2 jam.
-6. **Respon sukses**:
-   Kirim token JWT ke klien.
+##### 1. **Validasi Credential**
+```javascript
+const { email, password } = req.body;
+if (!email || !password) {
+  return res.status(400).json({ message: 'Email and password are required' });
+}
+```
+- Validasi keberadaan field tanpa format
+
+##### 2. **Authentication Flow**
+```javascript
+const [user] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+if (!user.length) {
+  return res.status(401).json({ message: 'Invalid credentials' });
+}
+if (!user[0].is_verified) {
+  return res.status(403).json({ message: 'Account not verified' });
+}
+const isValidPassword = await bcrypt.compare(password, user[0].password);
+if (!isValidPassword) {
+  return res.status(401).json({ message: 'Invalid credentials' });
+}
+```
+- 3 lapis proteksi:
+  1. Email terdaftar
+  2. Akun terverifikasi
+  3. Password valid
+
+##### 3. **Token Generation**
+```javascript
+const token = jwt.sign(
+  { userId: user[0].id, role: user[0].role },
+  process.env.JWT_SECRET,
+  { expiresIn: '2h' }
+);
+```
+- Payload minimal dengan userId dan role
+- Secret key dari environment variable
+- Expire time 2 jam
 
 ---
 
-### **13. Fungsi `resetPassword`**
+#### 🔄 resetPassword()
 ```javascript
 const resetPassword = async (req, res) => { ... }
 ```
-#### Deskripsi:
-Mengatur ulang password pengguna menggunakan token reset.
 
-#### Penjelasan Langkah:
-1. **Ambil data dari `req.body`**.
-2. **Validasi input**:
-   - Pastikan semua data (email, password baru, konfirmasi password, token reset) tersedia.
-   - Jika `newPassword` tidak cocok dengan `confirmPassword`, kirim error.
-3. **Cari pengguna berdasarkan email**:
-   - Jika tidak ditemukan, kirim error.
-4. **Validasi token reset**:
-   - Jika token tidak valid atau tidak sesuai, kirim error.
-5. **Perbarui password**:
-   - Hash password baru dan simpan ke database.
-   - Hapus token reset dari database.
-6. **Respon sukses**:
-   Kirim pesan bahwa password berhasil diubah.
+##### 1. **Validasi Parameter**
+```javascript
+const { email, newPassword, confirmPassword, resetToken } = req.body;
+if (!email || !newPassword || !confirmPassword || !resetToken) {
+  return res.status(400).json({ message: 'All fields are required' });
+}
+if (newPassword !== confirmPassword) {
+  return res.status(400).json({ message: 'Passwords do not match' });
+}
+```
+- Validasi kelengkapan input
+- Konfirmasi password client-side
+
+##### 2. **Token Validation**
+```javascript
+const [user] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+if (!user.length) {
+  return res.status(404).json({ message: 'User not found' });
+}
+if (user[0].reset_token !== resetToken) {
+  return res.status(400).json({ message: 'Invalid reset token' });
+}
+```
+- Pengecekan token di database
+- Tidak ada validasi waktu kadaluarsa token
 
 ---
 
-### **14. Fungsi `requestResetPassword`**
+#### 📧 requestResetPassword()
 ```javascript
 const requestResetPassword = async (req, res) => { ... }
 ```
-#### Deskripsi:
-Mengirim permintaan untuk reset password dengan mengirimkan email berisi token reset.
 
-#### Penjelasan Langkah:
-1. **Ambil `email` dari `req.body`**.
-2. **Cari pengguna berdasarkan email**:
-   - Jika tidak ditemukan, kirim error.
-3. **Validasi status akun**:
-   - Jika akun belum diverifikasi, kirim error.
-4. **Hasilkan token reset**:
-   Gunakan fungsi `generateResetToken` untuk membuat token.
-5. **Perbarui database**:
-   - Simpan token reset di database.
-6. **Kirim email reset password**:
-   Gunakan fungsi `sendResetPasswordEmail`.
-7. **Respon sukses**:
-   Kirim pesan bahwa permintaan reset password berhasil.
+##### 1. **User Verification**
+```javascript
+const [user] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+if (!user.length) {
+  return res.status(404).json({ message: 'User not found' });
+}
+if (!user[0].is_verified) {
+  return res.status(403).json({ message: 'Account not verified' });
+}
+```
+- Double check status verifikasi akun
+
+##### 2. **Token Management**
+```javascript
+const resetToken = generateResetToken();
+await db.query('UPDATE users SET reset_token = ? WHERE email = ?', [resetToken, email]);
+```
+- Generate token 32 byte hex
+- Simpan token plain text di database
 
 ---
 
-### **15. Modul Ekspor**
-```javascript
-module.exports = {
-  registerUser,
-  verifyUser,
-  loginUser,
-  resetPassword,
-  requestResetPassword,
-};
-```
+#### 🛡️ Security Implementation
+1. **Password Handling**
+   - Hashing dengan bcrypt (10 rounds)
+   - Tidak menyimpan password plain text
+
+2. **Session Management**
+   - JWT dengan expire time 2 jam
+   - Secret key dari environment variable
+
+3. **Error Messages**
+   - Pesan error generik untuk credential salah
+   ```javascript
+   return res.status(401).json({ message: 'Invalid credentials' });
+   ```
+
+---
 
 **[⬆ kembali ke atas](#daftar-isi)**
 
 ---
 
-### 📁 Database Connection
+### Comics Controller
+
+#### 📁 Database Connection
 ```javascript
 const db = require('../db/connection');
 ```
@@ -1632,14 +1748,14 @@ const db = require('../db/connection');
 
 ---
 
-### ✨ createComic()
+#### ✨ createComic()
 ```javascript
 const createComic = async (req, res) => {
   // ...implementation
 }
 ```
 
-#### 1. **Ekstraksi Parameter**
+##### 1. **Ekstraksi Parameter**
 ```javascript
 const { title, genre, description, creator_id, cover_image_url, status } = req.body;
 ```
@@ -1651,7 +1767,7 @@ const { title, genre, description, creator_id, cover_image_url, status } = req.b
   - `cover_image_url`: URL gambar cover (string opsional)
   - `status`: Status publikasi (default: 'ongoing')
 
-#### 2. **Validasi Input**
+##### 2. **Validasi Input**
 ```javascript
 if (!title || !creator_id) {
   return res.status(400).json({ message: 'Title and creator_id are required' });
@@ -1660,13 +1776,13 @@ if (!title || !creator_id) {
 - Memastikan field wajib terisi
 - Tidak ada validasi tipe data tambahan
 
-#### 3. **Default Value Handling**
+##### 3. **Default Value Handling**
 ```javascript
 status || 'ongoing'
 ```
 - Set nilai default `status` ke 'ongoing' jika tidak disediakan
 
-#### 4. **Operasi Database**
+##### 4. **Operasi Database**
 ```sql
 INSERT INTO comics (title, genre, description, creator_id, cover_image_url, status)
 VALUES (?, ?, ?, ?, ?, ?)
@@ -1674,7 +1790,7 @@ VALUES (?, ?, ?, ?, ?, ?)
 - Menggunakan parameterized query
 - Tidak ada validasi foreign key untuk `creator_id`
 
-#### 5. **Error Handling**
+##### 5. **Error Handling**
 ```javascript
 } catch (error) {
   console.error('Error creating comic:', error);
@@ -1686,21 +1802,21 @@ VALUES (?, ?, ?, ?, ?, ?)
 
 ---
 
-### 📚 getAllComics()
+#### 📚 getAllComics()
 ```javascript
 const getAllComics = async (req, res) => {
   // ...implementation
 }
 ```
 
-#### 1. **Query Database**
+##### 1. **Query Database**
 ```sql
 SELECT * FROM comics
 ```
 - Mengambil semua kolom tanpa filter
 - Tidak ada pagination atau limit hasil
 
-#### 2. **Response Structure**
+##### 2. **Response Structure**
 ```javascript
 res.status(200).json(comics)
 ```
@@ -1709,28 +1825,28 @@ res.status(200).json(comics)
 
 ---
 
-### 🔍 getComicById()
+#### 🔍 getComicById()
 ```javascript
 const getComicById = async (req, res) => {
   // ...implementation
 }
 ```
 
-#### 1. **Validasi ID**
+##### 1. **Validasi ID**
 ```javascript
 const { id } = req.params
 ```
 - Mengambil ID dari URL parameter
 - Tidak ada validasi format numerik
 
-#### 2. **Pencarian Database**
+##### 2. **Pencarian Database**
 ```sql
 SELECT * FROM comics WHERE id = ?
 ```
 - Menggunakan parameterized query untuk pencarian
 - Return single object bukan array
 
-#### 3. **Handling Not Found**
+##### 3. **Handling Not Found**
 ```javascript
 if (results.length === 0) {
   return res.status(404).json({ message: 'Comic not found' });
@@ -1740,14 +1856,14 @@ if (results.length === 0) {
 
 ---
 
-### ✏️ editComic()
+#### ✏️ editComic()
 ```javascript
 const editComic = async (req, res) => {
   // ...implementation
 }
 ```
 
-#### 1. **Update Logic**
+##### 1. **Update Logic**
 ```sql
 UPDATE comics SET 
   title = ?, 
@@ -1761,7 +1877,7 @@ WHERE id = ?
 - Update semua field sekaligus
 - Tidak ada pengecekan perubahan data
 
-#### 2. **Validasi Minimal**
+##### 2. **Validasi Minimal**
 ```javascript
 if (!title || !creator_id) {
   return res.status(400).json({ message: 'Title and creator_id are required' });
@@ -1772,14 +1888,14 @@ if (!title || !creator_id) {
 
 ---
 
-### 🗑️ deleteComic()
+#### 🗑️ deleteComic()
 ```javascript
 const deleteComic = (req, res) => {
   // ...implementation
 }
 ```
 
-#### 1. **Operasi Penghapusan**
+##### 1. **Operasi Penghapusan**
 ```sql
 DELETE FROM comics WHERE id = ?
 ```
@@ -1788,7 +1904,7 @@ DELETE FROM comics WHERE id = ?
 
 ---
 
-### 🛠️ Ekspor Modul
+#### 🛠️ Ekspor Modul
 ```javascript
 module.exports = {
   getAllComics,
@@ -1807,7 +1923,9 @@ module.exports = {
 
 ---
 
-### 📁 Database Connection
+### Comments Controller
+
+#### 📁 Database Connection
 ```javascript
 const db = require('../db/connection');
 ```
@@ -1816,14 +1934,14 @@ const db = require('../db/connection');
 
 ---
 
-### createComment()
+#### createComment()
 ```javascript
 const createComment = async (req, res) => {
   // ...implementation
 }
 ```
 
-#### 1. **Ekstraksi Parameter**
+##### 1. **Ekstraksi Parameter**
 ```javascript
 const { comment_text, comic_id, user_id, episode_id } = req.body;
 ```
@@ -1833,7 +1951,7 @@ const { comment_text, comic_id, user_id, episode_id } = req.body;
   - `user_id`: ID user pembuat (wajib)
   - `episode_id`: ID episode (opsional)
 
-#### 2. **Validasi Dasar**
+##### 2. **Validasi Dasar**
 ```javascript
 if (!comment_text || !comic_id || !user_id) {
   return res.status(400).json({ message: 'Comment text, comic_id, and user_id are required' });
@@ -1846,7 +1964,7 @@ if (typeof comment_text !== 'string') {
 - Memastikan field wajib tersedia
 - Memvalidasi tipe data teks komentar
 
-#### 3. **Sanitasi Input**
+##### 3. **Sanitasi Input**
 ```javascript
 const trimmedComment = comment_text.trim();
 if (trimmedComment.length < 3 || trimmedComment.length > 255) {
@@ -1856,7 +1974,7 @@ if (trimmedComment.length < 3 || trimmedComment.length > 255) {
 - Membersihkan whitespace berlebih
 - Membatasi panjang teks komentar (3-255 karakter)
 
-#### 4. **Validasi Numerik**
+##### 4. **Validasi Numerik**
 ```javascript
 if (isNaN(comic_id) || isNaN(user_id) || (episode_id && isNaN(episode_id))) {
   return res.status(400).json({ message: 'comic_id, user_id, and episode_id (if provided) must be valid numbers.' });
@@ -1865,7 +1983,7 @@ if (isNaN(comic_id) || isNaN(user_id) || (episode_id && isNaN(episode_id))) {
 - Memastikan semua ID berupa angka valid
 - Menggunakan `isNaN` untuk mengecek konversi numerik
 
-#### 5. **Pemeriksaan Referensi Database**
+##### 5. **Pemeriksaan Referensi Database**
 ```javascript
 const [userCheck] = await db.query('SELECT * FROM users WHERE id = ?', [user_id]);
 if (userCheck.length === 0) {
@@ -1882,7 +2000,7 @@ if (episode_id) {
 - Validasi keberadaan user di database
 - Validasi relasi episode dan komik jika episode_id disertakan
 
-#### 6. **Eksekusi Query Insert**
+##### 6. **Eksekusi Query Insert**
 ```javascript
 await db.query(
   'INSERT INTO comments (comment_text, comic_id, user_id, episode_id, create_at) VALUES (?, ?, ?, ?, NOW())',
@@ -1895,14 +2013,14 @@ await db.query(
 
 ---
 
-### editComment()
+#### editComment()
 ```javascript
 const editComment = async (req, res) => {
   // ...implementation
 }
 ```
 
-#### 1. **Validasi ID Komentar**
+##### 1. **Validasi ID Komentar**
 ```javascript
 let { id } = req.params;
 if (!id || isNaN(id)) {
@@ -1911,7 +2029,7 @@ if (!id || isNaN(id)) {
 ```
 - Memastikan parameter ID valid dan berupa angka
 
-#### 2. **Validasi Konten Komentar**
+##### 2. **Validasi Konten Komentar**
 ```javascript
 const trimmedComment = comment_text.trim();
 if (trimmedComment.length < 3 || trimmedComment.length > 255) {
@@ -1920,7 +2038,7 @@ if (trimmedComment.length < 3 || trimmedComment.length > 255) {
 ```
 - Validasi identik dengan createComment untuk konsistensi
 
-#### 3. **Pemeriksaan Eksistensi Komentar**
+##### 3. **Pemeriksaan Eksistensi Komentar**
 ```javascript
 const [findComment] = await db.query('SELECT * FROM comments WHERE id = ?', [id])
 if (findComment.length == 0) {
@@ -1929,7 +2047,7 @@ if (findComment.length == 0) {
 ```
 - Verifikasi komentar benar-benar ada sebelum update
 
-#### 4. **Eksekusi Query Update**
+##### 4. **Eksekusi Query Update**
 ```javascript
 await db.query('UPDATE comments SET comment_text = ? WHERE id = ?', [trimmedComment, id]);
 ```
@@ -1938,14 +2056,14 @@ await db.query('UPDATE comments SET comment_text = ? WHERE id = ?', [trimmedComm
 
 ---
 
-### deleteComment()
+#### deleteComment()
 ```javascript
 const deleteComment = async (req, res) => {
   // ...implementation
 }
 ```
 
-#### 1. **Validasi Cascade**
+##### 1. **Validasi Cascade**
 ```javascript
 const [findComment] = await db.query('SELECT * FROM comments WHERE id = ?', [id])
 if (findComment.length == 0) {
@@ -1955,7 +2073,7 @@ if (findComment.length == 0) {
 - Pemeriksaan ganda sebelum penghapusan
 - Mencegah operasi yang tidak perlu jika komentar tidak ada
 
-#### 2. **Eksekusi Penghapusan**
+##### 2. **Eksekusi Penghapusan**
 ```javascript
 await db.query('DELETE FROM comments WHERE id = ?', [id]);
 ```
@@ -1964,21 +2082,21 @@ await db.query('DELETE FROM comments WHERE id = ?', [id]);
 
 ---
 
-### getCommentsByComicId()
+#### getCommentsByComicId()
 ```javascript
 const getCommentsByComicId = async (req, res) => {
   // ...implementation
 }
 ```
 
-#### 1. **Struktur Query**
+##### 1. **Struktur Query**
 ```javascript
 ORDER BY create_at DESC
 ```
 - Menampilkan komentar terbaru pertama
 - Pengurutan dilakukan di database untuk efisiensi
 
-#### 2. **Response Format**
+##### 2. **Response Format**
 ```javascript
 res.status(200).json({ comic_id, comments });
 ```
@@ -1987,14 +2105,14 @@ res.status(200).json({ comic_id, comments });
 
 ---
 
-### getCommentsByEpisodeId()
+#### getCommentsByEpisodeId()
 ```javascript
 const getCommentsByEpisodeId = async (req, res) => {
   // ...implementation
 }
 ```
 
-#### 1. **Complex Join Query**
+##### 1. **Complex Join Query**
 ```sql
 SELECT 
   comments.id AS comment_id,
@@ -2005,7 +2123,7 @@ JOIN users ON comments.user_id = users.id
 - Join dengan tabel users untuk mendapatkan username
 - Alias kolom untuk respons yang lebih deskriptif
 
-#### 2. **Struktur Respons Terformat**
+##### 2. **Struktur Respons Terformat**
 ```javascript
 {
   "episode_id": "number",
@@ -2023,7 +2141,11 @@ JOIN users ON comments.user_id = users.id
 
 **[⬆ kembali ke atas](#daftar-isi)**
 
-### 📁 Database Connection
+---
+
+### Episode Controller
+
+#### 📁 Database Connection
 ```javascript
 const db = require('../db/connection');
 ```
@@ -2032,12 +2154,12 @@ const db = require('../db/connection');
 
 ---
 
-### ✨ createEpisode()
+#### ✨ createEpisode()
 ```javascript
 const createEpisode = async (req, res) => { ... }
 ```
 
-#### 1. **Validasi Input**
+##### 1. **Validasi Input**
 ```javascript
 // Validasi field wajib
 if (!episode_number || !title || !content_url || !comic_id) {
@@ -2063,7 +2185,7 @@ if (typeof content_url !== 'string' || content_url.trim().length === 0 || conten
 - Validasi ketat untuk tipe data dan format input
 - Pembatasan panjang string sesuai kebutuhan database
 
-#### 2. **Pemeriksaan Referensi**
+##### 2. **Pemeriksaan Referensi**
 ```javascript
 // Cek keberadaan komik
 const [comic] = await db.query('SELECT * FROM comics WHERE id = ?', [comic_id]);
@@ -2080,7 +2202,7 @@ if (results.length > 0) {
 - Memverifikasi referensi komik yang valid
 - Mencegah duplikasi nomor episode dalam satu komik
 
-#### 3. **Operasi Database**
+##### 3. **Operasi Database**
 ```javascript
 await db.query(
   'INSERT INTO episodes (comic_id, episode_number, title, content_url) VALUES (?, ?, ?, ?)',
@@ -2092,12 +2214,12 @@ await db.query(
 
 ---
 
-### 📚 getEpisodeByComicId()
+#### 📚 getEpisodeByComicId()
 ```javascript
 const getEpisodeByComicId = async (req, res) => { ... }
 ```
 
-#### 1. **Validasi Input**
+##### 1. **Validasi Input**
 ```javascript
 if (!comic_id || isNaN(comic_id)) {
   return res.status(400).json({ message: 'Comic ID is required' });
@@ -2105,7 +2227,7 @@ if (!comic_id || isNaN(comic_id)) {
 ```
 - Memastikan comic_id berupa angka valid
 
-#### 2. **Query Database**
+##### 2. **Query Database**
 ```javascript
 const [episodes] = await db.query(
   'SELECT episode_number, title FROM episodes WHERE comic_id = ? ORDER BY episode_number ASC', 
@@ -2115,7 +2237,7 @@ const [episodes] = await db.query(
 - Hanya mengambil data esensial (nomor episode dan judul)
 - Pengurutan berdasarkan nomor episode ascending
 
-#### 3. **Format Response**
+##### 3. **Format Response**
 ```javascript
 res.status(200).json({
   comic_id,
@@ -2130,12 +2252,12 @@ res.status(200).json({
 
 ---
 
-### ✏️ editEpisode()
+#### ✏️ editEpisode()
 ```javascript
 const editEpisode = async (req, res) => { ... }
 ```
 
-#### 1. **Validasi Parameter**
+##### 1. **Validasi Parameter**
 ```javascript
 if(!id || isNaN(id)) {
   return res.status(400).json({ message: 'Episode ID is required' });
@@ -2148,7 +2270,7 @@ if (!episode_number || !title || !content_url) {
 - Validasi ID episode dan kelengkapan data
 - Tidak ada validasi tipe data tambahan
 
-#### 2. **Pemeriksaan Eksistensi**
+##### 2. **Pemeriksaan Eksistensi**
 ```javascript
 const[episodeCheck] = await db.query('SELECT * FROM episodes WHERE id = ?', [id]);
 if (episodeCheck.length === 0) {
@@ -2157,7 +2279,7 @@ if (episodeCheck.length === 0) {
 ```
 - Verifikasi episode benar-benar ada sebelum update
 
-#### 3. **Update Data**
+##### 3. **Update Data**
 ```javascript
 await db.query(
   'UPDATE episodes SET episode_number = ?, title = ?, content_url = ? WHERE id = ?',
@@ -2169,12 +2291,12 @@ await db.query(
 
 ---
 
-### 🗑️ deleteEpisode()
+#### 🗑️ deleteEpisode()
 ```javascript
 const deleteEpisode = async (req, res) => { ... }
 ```
 
-#### 1. **Validasi Dasar**
+##### 1. **Validasi Dasar**
 ```javascript
 if (!id) {
   return res.status(400).json({ message: 'Episode ID is required' });
@@ -2182,7 +2304,7 @@ if (!id) {
 ```
 - Validasi sederhana untuk parameter ID
 
-#### 2. **Konfirmasi Eksistensi**
+##### 2. **Konfirmasi Eksistensi**
 ```javascript
 const [episodeCheck] = await db.query('SELECT * FROM episodes WHERE id = ?', [id]);
 if (episodeCheck === 0) {
@@ -2191,7 +2313,7 @@ if (episodeCheck === 0) {
 ```
 - Penghapusan hanya dilakukan jika episode ditemukan
 
-#### 3. **Operasi Penghapusan**
+##### 3. **Operasi Penghapusan**
 ```javascript
 await db.query('DELETE FROM episodes WHERE id = ?', [id]);
 ```
@@ -2200,12 +2322,12 @@ await db.query('DELETE FROM episodes WHERE id = ?', [id]);
 
 ---
 
-### 🔍 getEpisodeDetails()
+#### 🔍 getEpisodeDetails()
 ```javascript
 const getEpisodeDetails = async (req, res) => { ... }
 ```
 
-#### 1. **Validasi ID**
+##### 1. **Validasi ID**
 ```javascript
 if (!id || isNaN(id)) {
   return res.status(400).json({ message: 'Episode ID is required' });
@@ -2213,13 +2335,13 @@ if (!id || isNaN(id)) {
 ```
 - Memastikan parameter ID valid
 
-#### 2. **Query Database**
+##### 2. **Query Database**
 ```javascript
 const [episode] = await db.query('SELECT * FROM episodes WHERE id = ?', [id]);
 ```
 - Mengambil semua kolom dari tabel episodes
 
-#### 3. **Format Respons**
+##### 3. **Format Respons**
 ```javascript
 res.status(200).json({
   episode: episode[0],
@@ -2230,7 +2352,7 @@ res.status(200).json({
 
 ---
 
-### 🛠️ Ekspor Modul
+#### 🛠️ Ekspor Modul
 ```javascript
 module.exports = { 
   getEpisodeByComicId, 
@@ -2245,7 +2367,7 @@ module.exports = {
 
 ---
 
-### 🔄 Alur Error Handling
+#### 🔄 Alur Error Handling
 1. **Try-Catch Block**  
    Semua fungsi menggunakan blok try-catch untuk menangani error database
 
