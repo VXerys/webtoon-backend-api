@@ -1,77 +1,103 @@
-# Webtoon Backend API Documentation
-
-1. M. Sechan Alfarisi (20230040094)
-2. Inda Fadila Ainul Hawa (20230040074)
-3. Muhammad Sinar Agusta (20230040188)
+# 📚 Webtoon Backend API Documentation  
+*Platform Backend untuk Aplikasi Komik Digital Modern*  
 
 ---
 
-## **Daftar Isi**
-
-- [Pendahuluan](#pendahuluan)  
-- [Database](#database)  
-- [Struktur Proyek](#struktur-proyek)
-- [Penjelasan Endpoint API](#penjelasan-endpoint-api)
-  <details>
-   <summary>Klik untuk melihat semua langkah</summary>
-      
-   - [**Endpoint Auth**](#auth)
-   - [**Endpoint Comics**](#comics)
-   - [**Endpoint Episode**](#episode)
-   - [**Endpoint Comments**](#comments)
-   </details> 
-- [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)
-  <details>
-   <summary>Klik untuk melihat semua langkah</summary>
-      
-   - [**Server File**](#server-file)
-   - [**Middleware Folder**](#middlewares-folder)
-   - [**Service Folder**](#services-folder)
-   - [**Database Folder**](#database-folder)
-   - [**Routes Folder**](#routes-folder)
-   - [**Auth Controller**](#auth-controller)
-   - [**Comics Controller**](#comics-controller)
-   - [**Comments Controller**](#comments-controller)
-   - [**Episode Controller**](#episode-controller)
-
-   </details>  
-- [Kesimpulan](#kesimpulan)
+## 👥 **Tim Pengembang**  
+**Kelompok 4 - Proyek Webtoon API**  
+| **Nama Anggota**                 | **NIM**       |  
+|----------------------------------|---------------|  
+| M. Sechan Alfarisi               | 20230040094   |  
+| Inda Fadila Ainul Hawa           | 20230040074   |  
+| Muhammad Sinar Agusta            | 20230040188   |  
 
 ---
 
-## **Pendahuluan**
-
-### **Deskripsi Proyek**
-Webtoon Backend API adalah sebuah proyek backend yang dirancang untuk mendukung aplikasi membaca komik digital (webtoon). Proyek ini memungkinkan pengelolaan data komik, episode, pengguna, serta menyediakan fitur autentikasi, otorisasi, dan pengelolaan akun. Backend ini dibangun dengan teknologi modern untuk memastikan performa, skalabilitas, dan keamanan yang optimal.
-
-Aplikasi ini ditujukan bagi pengembang atau tim pengembang yang ingin membuat platform webtoon lengkap. Dengan menyediakan API yang terstruktur dengan baik, proyek ini mempermudah pengelolaan data komik dan episode, interaksi pengguna, serta integrasi dengan sistem frontend seperti aplikasi web atau mobile.
-
-### **Tujuan Proyek**
-1. **Mendukung Pengelolaan Komik dan Episode**: Menyediakan endpoint untuk membuat, membaca, memperbarui, dan menghapus data komik serta episode.
-2. **Autentikasi dan Autorisasi**: Mengimplementasikan sistem login, register, serta verifikasi pengguna dengan keamanan menggunakan JWT (JSON Web Token).
-3. **Efisiensi dan Skalabilitas**: Menggunakan praktik terbaik dalam pengembangan backend agar API dapat menangani lalu lintas data yang besar tanpa menurunkan performa.
-4. **Pengelolaan Database yang Efisien**: Database dirancang menggunakan relasi antar tabel untuk memastikan integritas data.
-
-### **Fitur Utama**
-- **Manajemen Komik**: Pengguna dapat mengakses dan mengelola daftar komik yang tersedia.
-- **Manajemen Episode**: Menyediakan fungsi CRUD untuk episode yang terhubung dengan komik tertentu.
-- **Sistem Pengguna**: Registrasi, login, dan verifikasi akun pengguna.
-- **Keamanan**: Sistem otentikasi berbasis token untuk memastikan keamanan akses API.
-- **Pengelolaan Status**: Menandai status pengguna (aktif, terverifikasi) dan status komik (ongoing, completed).
-- **Error Handling yang Andal**: Memberikan pesan kesalahan yang jelas kepada pengembang untuk debugging lebih mudah.
-
-### **Teknologi yang Digunakan**
-1. **Node.js & Express**: Untuk pengembangan server backend yang cepat dan ringan.
-2. **MySQL**: Sebagai database relasional untuk menyimpan data aplikasi.
-3. **JWT**: Untuk autentikasi berbasis token yang aman.
-4. **Postman**: Untuk pengujian dan dokumentasi endpoint API.
-
-### **Penerapan Proyek**
-Proyek ini cocok digunakan untuk platform yang ingin memberikan pengalaman membaca komik yang interaktif dan terorganisir dengan baik. Selain itu, backend ini mudah diperluas untuk menambahkan fitur baru seperti komentar, sistem penilaian, atau pengelolaan langganan pengguna di masa depan.
-Baik, kita akan melanjutkan ke bagian **Database**. Berikut adalah penjelasan dan contoh query yang relevan berdasarkan file database yang Anda kirimkan:
+## 🗂️ **Daftar Isi**  
+- 🌟 [Pendahuluan](#pendahuluan)   
+- 🗃️ [Database](#database)   
+- 🏗️ [Struktur Proyek](#struktur-proyek)
+- 🔗 [Endpoint API](#penjelasan-endpoint-api)
+  - 🔐 [Autentikasi](#auth)
+  - 📖 [Komik](#comics)
+  - 🎬 [Episode](#episode)  
+  - 💬 [Komentar](#comments)  
+- 💻 [Kode Utama](#kode-utama-dan-fungsionalitas)
+  - 🖥️ [Server](#server-file) 
+  - 🛡️ [Middleware](#middlewares-folder)  
+  - 📧 [Services](#services-folder)  
+  - 🗄️ [Database](#database-folder)  
+  - 🛣️ [Routes](#routes-folder)  
+  - 🎮 [Controller](#controller)
+        <details>
+         <summary>Klik untuk melihat semua langkah</summary>
+         - [**Auth Controller**](#auth-controller)
+         - [**Comics Controller**](#comics-controller)
+         - [**Comments Controller**](#comments-controller)
+         - [**Episode Controller**](#episodes-controller)
+        </details>  
+- 🏁 [Kesimpulan](#-kesimpulan)  
 
 ---
 
+## 🌟 **Pendahuluan**  
+
+### 🎯 **Deskripsi Proyek**  
+**Webtoon Backend API** adalah solusi backend khusus untuk platform komik digital yang menyediakan:  
+✨ **Manajemen Konten**: CRUD komik & episode  
+✨ **Sistem Pengguna**: Registrasi, login, verifikasi email  
+✨ **Interaksi**: Komentar & rating (opsional)  
+✨ **Keamanan**: JWT Token & role-based access  
+
+Dibangun untuk mendukung aplikasi frontend (web/mobile) dengan arsitektur RESTful API yang scalable.  
+
+---
+
+### 🚀 **Tujuan Proyek**  
+| Ikon | Tujuan |  
+|------|--------|  
+| 🔑 | Autentikasi pengguna dengan JWT Token |  
+| 📈 | Optimasi query database untuk performa tinggi |  
+| 🛡️ | Proteksi endpoint dengan RBAC (Role-Based Access Control) |  
+| 🔄 | Standardisasi response API untuk integrasi mudah |  
+
+---
+
+### ⚙️ **Teknologi Inti**  
+| Komponen       | Teknologi               | Ikon |  
+|----------------|-------------------------|------|  
+| **Backend**    | Node.js + Express       | 🟢 |  
+| **Database**   | MySQL + Sequelize       | 🐬 |  
+| **Auth**       | JWT + Bcrypt            | 🔐 |  
+| **Testing**    | Postman                 | 📡 |  
+
+---
+
+### 🎨 **Fitur Unggulan**  
+- 🧩 **Modular Codebase**: Struktur folder terorganisir  
+- 📊 **Relational Database**: Diagram ER terintegrasi  
+- 🔍 **Advanced Search**: Filter komik/genre  
+- 📅 **Automated Services**: Email verifikasi & reset password  
+- 📝 **Logging System**: Error tracking terpusat  
+
+---
+
+### 🌍 **Penerapan**  
+**API ini cocok untuk**:  
+- Startup digital komik  
+- Platform self-publishing creator  
+- Sistem manajemen konten publisher  
+- Integrasi dengan aplikasi mobile/web  
+
+---
+
+> 💡 **Catatan Developer**:  
+> "_Arsitektur ini dirancang untuk mudah dikembangkan dengan fitur premium seperti sistem langganan, analytics, dan integrasi pembayaran._"
+
+---
+
+**[⬆ Kembali ke Daftar Isi](#-daftar-isi)**  
+<br> Mari lanjut ke bagian **[🗃️ Database](#-database)** untuk memahami struktur data!
 **[⬆ kembali ke atas](#daftar-isi)**
 
 ---
