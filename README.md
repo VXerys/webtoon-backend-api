@@ -31,18 +31,19 @@
   - 🗄️ [Database](#database-folder)  
   - 🛣️ [Routes](#routes-folder)  
   - 🎮 [Controller](#controller)
-        <details>
-         <summary>Klik untuk melihat semua langkah</summary>
-         - [**Auth Controller**](#auth-controller)
-         - [**Comics Controller**](#comics-controller)
-         - [**Comments Controller**](#comments-controller)
-         - [**Episode Controller**](#episodes-controller)
-        </details>  
-- 🏁 [Kesimpulan](#-kesimpulan)  
+    <details>
+      <summary>Klik untuk melihat semua controller</summary>
+      
+      - [**Auth Controller**](#auth-controller)  
+      - [**Comics Controller**](#comics-controller)  
+      - [**Comments Controller**](#comments-controller)  
+      - [**Episodes Controller**](#episode-controller)  
+    </details>
+- 🏁 [Kesimpulan](#-kesimpulan)
 
 ---
 
-## 🌟 **Pendahuluan**  
+## **Pendahuluan**  
 
 ### 🎯 **Deskripsi Proyek**  
 **Webtoon Backend API** adalah solusi backend khusus untuk platform komik digital yang menyediakan:  
