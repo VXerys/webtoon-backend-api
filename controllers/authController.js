@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const db = require('../db/connection');
 const { sendVerificationEmail, generateVerificationCode, sendResetPasswordEmail, generateResetToken } = require('../services/emailService');
 
-
 const registerUser = async (req, res) => {
  try {
   const { username, email, password, confirmPassword } = req.body;
