@@ -22,10 +22,10 @@
   <details>
    <summary>Klik untuk melihat semua langkah</summary>
       
-   - [**AuthController**](#a-auth)
-   - [**comicsController**](#b-comics)
-   - [**episodesController**](#c-episodes)
-   - [**commentsController**](#d-comments)
+   - [**Endpoint Auth**](#auth)
+   - [**Endpoint Comics**](#comics)
+   - [**Endpoint Episodes**](#episodes)
+   - [**Endpoint Comments**](#comments)
    </details> 
 - [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)  
 - [Kesimpulan](#kesimpulan)
@@ -493,13 +493,13 @@ File ini berisi metadata proyek, daftar dependensi, dan script untuk menjalankan
 
 ### **Penjelasan Endpoint API**
 
-#### **a. Auth**
+#### **Auth**
 
 Folder `Auth` digunakan untuk mengelola autentikasi dan manajemen pengguna, termasuk registrasi, login, verifikasi email, serta pemulihan kata sandi. Berikut adalah daftar endpoint yang tersedia:
 
 ---
 
-#### **1. POST /auth/register**
+##### **1. POST /auth/register**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mendaftarkan pengguna baru. Data yang diperlukan adalah:
@@ -538,7 +538,7 @@ Jika berhasil, pengguna akan menerima email verifikasi. Jika gagal, akan mengemb
 
 ---
 
-#### **2. POST /auth/login**
+##### **2. POST /auth/login**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk login pengguna. Data yang diperlukan adalah:
@@ -574,7 +574,7 @@ Jika berhasil, akan mengembalikan token JWT untuk autentikasi. Jika gagal, pesan
 
 ---
 
-#### **3. POST /auth/verify**
+##### **3. POST /auth/verify**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk memverifikasi akun pengguna. Data yang diperlukan adalah:
@@ -609,7 +609,7 @@ Jika berhasil, status akun pengguna diperbarui menjadi terverifikasi.
 
 ---
 
-#### **4. POST /auth/request-reset-password-code**
+##### **4. POST /auth/request-reset-password-code**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk meminta kode reset password. Data yang diperlukan adalah:
@@ -642,7 +642,7 @@ Jika berhasil, sistem akan mengirimkan kode reset password ke email pengguna.
 
 ---
 
-#### **5. POST /auth/reset-password**
+##### **5. POST /auth/reset-password**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mereset kata sandi pengguna. Data yang diperlukan adalah:
@@ -680,14 +680,15 @@ Jika berhasil, sistem akan memperbarui kata sandi pengguna di database.
 
 ---
 
+**[⬆ kembali ke atas](#daftar-isi)**
 
-#### **b. Comics**
+#### **Comics**
 
 Folder `Comics` digunakan untuk mengelola data komik, mulai dari membuat, membaca, mengedit, hingga menghapus data komik. Berikut adalah daftar endpoint yang tersedia:
 
 ---
 
-#### **1. POST /comics/create**
+##### **1. POST /comics/create**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk membuat komik baru. Data yang diperlukan adalah:
@@ -721,7 +722,7 @@ Jika berhasil, akan mengembalikan data komik yang baru dibuat.
 
 ---
 
-#### **2. GET /comics**
+##### **2. GET /comics**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengambil semua data komik yang tersedia. Mendukung fitur filter dan pagination melalui parameter query opsional:
@@ -746,7 +747,7 @@ Mengembalikan daftar komik beserta metadata pagination.
 
 ---
 
-#### **3. PUT /comics/edit/4**
+##### **3. PUT /comics/edit/4**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengedit data komik berdasarkan ID. Data yang dapat diubah adalah:
@@ -769,7 +770,7 @@ Jika berhasil, data komik yang telah diperbarui akan dikembalikan.
 
 ---
 
-#### **4. GET /comics/4**
+##### **4. GET /comics/4**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengambil detail data komik berdasarkan ID.
@@ -791,7 +792,7 @@ Mengembalikan data komik secara lengkap berdasarkan ID.
 
 ---
 
-#### **5. DELETE /comics/delete/3**
+##### **5. DELETE /comics/delete/3**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk menghapus data komik berdasarkan ID.
@@ -813,7 +814,7 @@ Jika berhasil, akan mengembalikan pesan konfirmasi penghapusan.
 
 ---
 
-Berikut adalah penjelasan endpoint untuk **Episode**, disusun dengan format yang konsisten dan detail seperti sebelumnya.
+**[⬆ kembali ke atas](#daftar-isi)**
 
 ---
 
@@ -824,7 +825,7 @@ Folder `Episode` digunakan untuk mengelola data episode dari sebuah komik, terma
 
 ---
 
-#### **1. POST /episodes/create**
+##### **1. POST /episodes/create**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk membuat episode baru untuk sebuah komik yang telah ada. Data yang diperlukan adalah:
@@ -856,7 +857,7 @@ Jika berhasil, data episode yang baru dibuat akan dikembalikan.
 
 ---
 
-#### **2. GET /episodes/4**
+##### **2. GET /episodes/4**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengambil daftar semua episode berdasarkan **ID komik**. Mendukung pagination dengan parameter opsional:
@@ -880,7 +881,7 @@ Mengembalikan daftar episode yang terdaftar dalam komik tersebut, beserta metada
 
 ---
 
-#### **3. PUT /episodes/edit/10**
+##### **3. PUT /episodes/edit/10**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengedit data episode berdasarkan ID episode. Data yang dapat diubah adalah:
@@ -910,7 +911,7 @@ Jika berhasil, data episode yang telah diperbarui akan dikembalikan.
 
 ---
 
-#### **4. GET /episodes/details/12**
+##### **4. GET /episodes/details/12**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengambil detail lengkap dari sebuah episode berdasarkan **ID episode**.
@@ -932,7 +933,7 @@ Mengembalikan detail episode yang diminta.
 
 ---
 
-#### **5. DELETE /episodes/delete/12**
+##### **5. DELETE /episodes/delete/12**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk menghapus sebuah episode berdasarkan **ID episode**.
@@ -958,17 +959,20 @@ Jika berhasil, akan mengembalikan pesan konfirmasi penghapusan.
 *Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
 > ![5-delete-episode](https://github.com/user-attachments/assets/63390814-a2a5-4275-92c2-5487fb81a92a)
 
+---
+
+**[⬆ kembali ke atas](#daftar-isi)**
 
 ---
 
 
-#### **d. Comments**
+#### **Comments**
 
 Folder `Comments` digunakan untuk mengelola komentar yang berkaitan dengan komik dan episode. Komentar dapat ditambahkan, diubah, dihapus, serta diambil berdasarkan ID komik atau ID episode tertentu. Berikut adalah daftar endpoint yang tersedia:
 
 ---
 
-#### **1. POST /comments/create-comment**
+##### **1. POST /comments/create-comment**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk menambahkan komentar baru pada sebuah komik atau episode. Data yang diperlukan adalah:
@@ -998,7 +1002,7 @@ Jika berhasil, data komentar yang baru dibuat akan dikembalikan.
 
 ---
 
-#### **2. PUT /comments/edit-comment/7**
+##### **2. PUT /comments/edit-comment/7**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengedit komentar berdasarkan **ID komentar**. Data yang dapat diubah adalah:
@@ -1031,7 +1035,7 @@ Jika berhasil, data komentar yang telah diperbarui akan dikembalikan.
 
 ---
 
-#### **3. DELETE /comments/delete-comment/7**
+##### **3. DELETE /comments/delete-comment/7**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk menghapus sebuah komentar berdasarkan **ID komentar**.
@@ -1060,7 +1064,7 @@ Jika berhasil, akan mengembalikan pesan konfirmasi penghapusan.
 
 ---
 
-#### **4. GET /comments/get-comment/4**
+##### **4. GET /comments/get-comment/4**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengambil semua komentar yang berkaitan dengan **ID komik** tertentu. Mendukung pagination dengan parameter opsional:
@@ -1084,7 +1088,7 @@ Mengembalikan daftar komentar yang terkait dengan komik tersebut, beserta metada
 
 ---
 
-#### **5. GET /comments/get-comment-episode/8**
+##### **5. GET /comments/get-comment-episode/8**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk mengambil semua komentar yang berkaitan dengan **ID episode** tertentu. Mendukung pagination dengan parameter opsional:
