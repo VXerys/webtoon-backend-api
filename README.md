@@ -96,8 +96,6 @@ Dibangun untuk mendukung aplikasi frontend (web/mobile) dengan arsitektur RESTfu
 
 ---
 
-**[⬆ Kembali ke Daftar Isi](#-daftar-isi)**  
-<br> Mari lanjut ke bagian **[🗃️ Database](#-database)** untuk memahami struktur data!
 **[⬆ kembali ke atas](#daftar-isi)**
 
 ---
