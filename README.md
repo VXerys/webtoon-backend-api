@@ -3,7 +3,7 @@
 
 ---
 
-## 👥 **Tim Pengembang**  
+## 👥 **Anggota Kelompok**  
 **Kelompok 4 - Proyek Webtoon API**  
 | **Nama Anggota**                 | **NIM**       |  
 |----------------------------------|---------------|  
