@@ -18,7 +18,15 @@
    - [**db**](#5-folder-db)
    - [**utils**](#6-folder-utils)
    </details>
-- [Penjelasan Endpoint API](#penjelasan-endpoint-api)  
+- [Penjelasan Endpoint API](#penjelasan-endpoint-api)
+  <details>
+   <summary>Klik untuk melihat semua langkah</summary>
+      
+   - [**AuthController**](#a-auth)
+   - [**comicsController**](#b-comics)
+   - [**episodesController**](#c-episodes)
+   - [**commentsController**](#d-comments)
+   </details> 
 - [Kode Utama dan Fungsionalitas](#kode-utama-dan-fungsionalitas)  
 - [Kesimpulan](#kesimpulan)
 
