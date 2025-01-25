@@ -338,46 +338,9 @@ Jika berhasil, pengguna akan menerima email verifikasi. Jika gagal, akan mengemb
 *Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
 > ![register](https://github.com/user-attachments/assets/48d839c0-d234-4d1e-83f6-13ff4efbe103)
 
-
 ---
 
-##### **2. POST /auth/login**
-
-**Deskripsi:**  
-Endpoint ini digunakan untuk login pengguna. Data yang diperlukan adalah:
-- **`email`**: Alamat email pengguna.
-- **`password`**: Kata sandi pengguna.
-
-**Contoh Request:**
-
-```json
-POST /auth/login
-{
-  "email": "johndoe@example.com",
-  "password": "securepassword123"
-}
-```
-
-**Respons:**  
-Jika berhasil, akan mengembalikan token JWT untuk autentikasi. Jika gagal, pesan error akan diberikan.
-
-**Contoh Respons:**
-
-```json
-{
-  "message": "Login successful.",
-  "token": "eyJhbGciOiJIUzI1NiIsInR..."
-}
-```
-
-**Screenshot:**  
-*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
-> ![login](https://github.com/user-attachments/assets/b7136e5a-38bd-440f-adc5-7bda06ae8e05)
-
-
----
-
-##### **3. POST /auth/verify**
+##### **2. POST /auth/verify**
 
 **Deskripsi:**  
 Endpoint ini digunakan untuk memverifikasi akun pengguna. Data yang diperlukan adalah:
@@ -409,6 +372,44 @@ Jika berhasil, status akun pengguna diperbarui menjadi terverifikasi.
 *Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
 > ![verify](https://github.com/user-attachments/assets/6d4c3910-70c6-4efa-b6e0-963d55169d99)
 
+
+*Tampilkan pesan email untuk register:*
+> ![WhatsApp Image 2025-01-23 at 21 42 27_d1a0926c](https://github.com/user-attachments/assets/ea604dcd-6254-457c-b77e-d23df3cfd836)
+
+---
+
+##### **3. POST /auth/login**
+
+**Deskripsi:**  
+Endpoint ini digunakan untuk login pengguna. Data yang diperlukan adalah:
+- **`email`**: Alamat email pengguna.
+- **`password`**: Kata sandi pengguna.
+
+**Contoh Request:**
+
+```json
+POST /auth/login
+{
+  "email": "johndoe@example.com",
+  "password": "securepassword123"
+}
+```
+
+**Respons:**  
+Jika berhasil, akan mengembalikan token JWT untuk autentikasi. Jika gagal, pesan error akan diberikan.
+
+**Contoh Respons:**
+
+```json
+{
+  "message": "Login successful.",
+  "token": "eyJhbGciOiJIUzI1NiIsInR..."
+}
+```
+
+**Screenshot:**  
+*Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
+> ![login](https://github.com/user-attachments/assets/b7136e5a-38bd-440f-adc5-7bda06ae8e05)
 
 ---
 
@@ -442,6 +443,8 @@ Jika berhasil, sistem akan mengirimkan kode reset password ke email pengguna.
 *Tampilkan hasil pengujian endpoint ini di Postman menggunakan gambar, misalnya:*
 > ![request-reset-password](https://github.com/user-attachments/assets/cd27644a-8ca3-42e7-afdc-c68796ab5928)
 
+*Tampilkan pesan email untuk request reset password:*
+> ![WhatsApp Image 2025-01-23 at 21 32 47_2c64b281](https://github.com/user-attachments/assets/12b6ef4a-afc9-46c8-ae78-fa85a2035038)
 
 ---
 
