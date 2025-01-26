@@ -488,12 +488,6 @@ Jika berhasil, sistem akan memperbarui kata sandi pengguna di database.
 
 Folder `Comics` digunakan untuk mengelola data komik, mulai dari membuat, membaca, mengedit, hingga menghapus data komik. Berikut adalah daftar endpoint yang tersedia:
 
----
-
-Berikut revisi dokumentasi endpoint `POST /comics/create` yang terintegrasi dengan Cloudinary:
-
----
-
 ##### **1. POST /comics/create**  
 **Membuat Komik Baru dengan Upload Cover ke Cloudinary**
 
